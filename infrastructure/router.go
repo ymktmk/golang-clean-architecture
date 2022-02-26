@@ -1,4 +1,3 @@
-// リクエストを受け取るところ
 package infrastructure
 
 import (
@@ -8,6 +7,8 @@ import (
 
 func Routing() *mux.Router {
 	r := mux.NewRouter()
-	r.HandleFunc("/user/create", controllers.UserCreate).Methods("POST")
+	// SQLHandlerをInterfaces層のControllerに
+	userController := controllers.NewUserController(NewSqlHandler())
+	r.HandleFunc("/user/create", userController.Create).Methods("POST")
 	return r
 }

@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	// routing 
+	// routing
 	r := infrastructure.Routing()
 	// cors enabled
 	c := cors.AllowAll().Handler(r)

@@ -1,3 +1,2 @@
-# Interface層のdatabse
-
-実際にデータベースにやりとりする処理はここに書く
+# Database GatewayをRepositoryと呼ぶ
+Gatewaysは永続化に関するアダプターである

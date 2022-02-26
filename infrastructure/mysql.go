@@ -1,3 +1,4 @@
+// DBとの接続
 package infrastructure
 
 import (
@@ -11,7 +12,8 @@ type SqlHandler struct {
 }
 
 func NewSqlHandler() *SqlHandler {
-    conn, err := sql.Open("mysql", "root:@tcp(localhost:3306)/golang")
+    // create table golang.users (id int auto_increment, name varchar(10), index(id));
+    conn, err := sql.Open("mysql", "root:!Ymktmk09@tcp(localhost:3306)/golang?charset=utf8mb4")
     if err != nil {
         panic(err.Error)
     }
