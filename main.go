@@ -2,16 +2,11 @@ package main
 
 import (
 	"Golang-CleanArchitecture/infrastructure"
-	"log"
-	"net/http"
-	"github.com/rs/cors"
+	"github.com/labstack/echo/middleware"
 )
 
 func main() {
-	// routing
-	r := infrastructure.Routing()
-	// cors enabled
-	c := cors.AllowAll().Handler(r)
-	// start the server
-	log.Fatal(http.ListenAndServe(":8080", c))
+	echo := infrastructure.Routing()
+	echo.Use(middleware.CORS())
+	echo.Logger.Fatal(echo.Start(":8080"))
 }

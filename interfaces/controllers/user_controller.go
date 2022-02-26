@@ -2,18 +2,17 @@ package controllers
 
 import (
 	"Golang-CleanArchitecture/domain"
-	"Golang-CleanArchitecture/usecase"
 	"Golang-CleanArchitecture/interfaces/database"
-	"encoding/json"
-	"fmt"
+	"Golang-CleanArchitecture/usecase"
 	"net/http"
+	"strconv"
+	"github.com/labstack/echo"
 )
 
 type UserController struct {
     Interactor usecase.UserInteractor
 }
 
-// これがわからん
 func NewUserController(sqlHandler database.SqlHandler) *UserController {
     return &UserController{
         Interactor: usecase.UserInteractor{
@@ -24,28 +23,37 @@ func NewUserController(sqlHandler database.SqlHandler) *UserController {
     }
 }
 
-func (controller *UserController) Create(w http.ResponseWriter, r *http.Request) {
-
-	// convert to json
-	body := make([]byte, r.ContentLength)
-	r.Body.Read(body)
-	var user domain.User
-	json.Unmarshal(body, &user)
-
-	// usecase
-	user, err := controller.Interactor.Add(user)
-    if err != nil {
-        fmt.Println(err)
+func (controller *UserController) CreateUser(c echo.Context) error {
+	u := new(domain.User)
+	if err := c.Bind(&u); err != nil {
+		return err
 	}
-	
-	// response
-	fmt.Println(user)
 
-	// response, err := json.Marshal(user)
-	// if err != nil {
-	// 	fmt.Println(err)
-	// }
-	// w.Header().Set("Content-Type", "application/json")
-	// w.Write(response)
+	user, err := controller.Interactor.Add(*u)
+    if err != nil {
+		return err
+	}
+
+	return c.JSON(http.StatusOK, user)
 }
+
+func (controller *UserController) GetAllUsers(c echo.Context) error {
+	users, err := controller.Interactor.Users()
+    if err != nil {
+		return err
+	}
+	return c.JSON(http.StatusOK, users)
+}
+
+func (controller *UserController) GetUser(c echo.Context) error {
+	id, _ := strconv.Atoi(c.Param("id"))
+
+	user, err := controller.Interactor.Show(id)
+	if err != nil {
+		return err
+	}
+
+	return c.JSON(http.StatusOK, user)
+}
+
 

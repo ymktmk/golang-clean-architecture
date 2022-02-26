@@ -1,14 +1,16 @@
 package infrastructure
 
 import (
-	"github.com/gorilla/mux"
 	"Golang-CleanArchitecture/interfaces/controllers"
+	"github.com/labstack/echo"
 )
 
-func Routing() *mux.Router {
-	r := mux.NewRouter()
-	// SQLHandlerをInterfaces層のControllerに
+func Routing() *echo.Echo {
 	userController := controllers.NewUserController(NewSqlHandler())
-	r.HandleFunc("/user/create", userController.Create).Methods("POST")
-	return r
+	echo := echo.New()
+	// routing
+	echo.POST("/users/create", userController.CreateUser)
+	echo.GET("/users/:id", userController.GetUser)
+	echo.GET("/users",userController.GetAllUsers)
+	return echo
 }

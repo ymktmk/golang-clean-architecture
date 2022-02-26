@@ -9,6 +9,7 @@ import (
 
 type UserRepository interface {
 	// SQLの実行メソッドをここに埋め込む
-	Store(domain.User) (int, error)
+	Store(user domain.User) (int, error)
 	FindById(identifier int) (domain.User, error)
+	FindAll() (domain.Users, error)
 }

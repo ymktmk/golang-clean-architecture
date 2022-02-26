@@ -6,7 +6,12 @@ import (
 	"fmt"
 )
 
+// ここで再定義して使う
 type UserRepository struct {
+    // type SqlHandler interface {
+    //     Execute(string, ...interface{}) (Result, error)
+    //     Query(string, ...interface{}) (Row, error)
+    // }
     SqlHandler
 }
 
@@ -41,4 +46,29 @@ func (repo *UserRepository) FindById(identifier int) (domain.User, error) {
     user.ID = id
     user.Name = name
     return user, err
+}
+
+
+func (repo *UserRepository) FindAll() (domain.Users, error) {
+    rows, err := repo.Query("SELECT id, name FROM users")
+    defer rows.Close()
+    if err != nil {
+        fmt.Println(err)
+    }
+
+    var users domain.Users
+    for rows.Next() {
+        var id int
+        var name string
+        if err := rows.Scan(&id, &name); err != nil {
+            continue
+        }
+        user := domain.User{
+            ID: id,
+            Name: name,
+        }
+        users = append(users, user)
+    }
+    
+    return users, err
 }

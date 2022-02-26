@@ -1,9 +1,11 @@
 // DBとの接続
+// create table golang.users (id int auto_increment, name varchar(10), index(id));
 package infrastructure
 
 import (
     "Golang-CleanArchitecture/interfaces/database"
-	"database/sql"
+    "database/sql"
+    // "github.com/jinzhu/gorm"
 	_ "github.com/go-sql-driver/mysql"
 )
 
@@ -12,7 +14,6 @@ type SqlHandler struct {
 }
 
 func NewSqlHandler() *SqlHandler {
-    // create table golang.users (id int auto_increment, name varchar(10), index(id));
     conn, err := sql.Open("mysql", "root:!Ymktmk09@tcp(localhost:3306)/golang?charset=utf8mb4")
     if err != nil {
         panic(err.Error)
