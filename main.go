@@ -3,7 +3,7 @@ package main
 import (
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
-	"Golang-CleanArchitecture/infrastructure"
+	"github.com/ymktmk/golang-clean-architecture/infrastructure"
 )
 
 func main() {

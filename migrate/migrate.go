@@ -3,9 +3,10 @@ package migrate
 import (
 	"os"
 	_ "github.com/go-sql-driver/mysql"
+	// v1
 	"github.com/jinzhu/gorm"
 	"github.com/joho/godotenv"
-	"Golang-CleanArchitecture/domain"
+	"github.com/ymktmk/golang-clean-architecture/domain"
 )
 
 func main() {

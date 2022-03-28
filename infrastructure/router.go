@@ -1,7 +1,7 @@
 package infrastructure
 
 import (
-	"Golang-CleanArchitecture/interfaces/controllers"
+	"github.com/ymktmk/golang-clean-architecture/interfaces/controllers"
 	"github.com/labstack/echo"
 )
 

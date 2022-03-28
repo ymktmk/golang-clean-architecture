@@ -1,4 +1,4 @@
-FROM golang:latest
+FROM --platform=linux/x86_64 golang:latest
 
 RUN mkdir /go/src/work
 

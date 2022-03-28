@@ -1,6 +1,6 @@
 package usecase
 
-import "Golang-CleanArchitecture/domain"
+import "github.com/ymktmk/golang-clean-architecture/domain"
 
 type TodoRepository interface {
 	FindByUid(uid string) (user *domain.User, err error)

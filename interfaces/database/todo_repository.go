@@ -1,6 +1,6 @@
 package database
 
-import "Golang-CleanArchitecture/domain"
+import "github.com/ymktmk/golang-clean-architecture/domain"
 
 type TodoRepository struct {
 	SqlHandler

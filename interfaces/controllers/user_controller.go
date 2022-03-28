@@ -3,9 +3,9 @@ package controllers
 import (
 	"net/http"
 	"github.com/labstack/echo"
-	"Golang-CleanArchitecture/domain"
-	"Golang-CleanArchitecture/interfaces/database"
-	"Golang-CleanArchitecture/usecase"
+	"github.com/ymktmk/golang-clean-architecture/domain"
+	"github.com/ymktmk/golang-clean-architecture/interfaces/database"
+	"github.com/ymktmk/golang-clean-architecture/usecase"
 )
 
 type UserController struct {

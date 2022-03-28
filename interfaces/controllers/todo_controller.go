@@ -1,8 +1,8 @@
 package controllers
 
 import (
-	"Golang-CleanArchitecture/interfaces/database"
-	"Golang-CleanArchitecture/usecase"
+	"github.com/ymktmk/golang-clean-architecture/interfaces/database"
+	"github.com/ymktmk/golang-clean-architecture/usecase"
 	"net/http"
 
 	"github.com/labstack/echo"

@@ -1,6 +1,6 @@
 package domain
 
-import "Golang-CleanArchitecture/domain/gorm"
+import "github.com/ymktmk/golang-clean-architecture/domain/gorm"
 
 type Users []User
 

@@ -1,7 +1,7 @@
 package usecase
 
 import (
-	"Golang-CleanArchitecture/domain"
+	"github.com/ymktmk/golang-clean-architecture/domain"
 )
 
 type UserRepository interface {

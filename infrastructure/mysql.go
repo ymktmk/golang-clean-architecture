@@ -4,7 +4,7 @@ import (
 	"os"
 	"gorm.io/driver/mysql"
 	"github.com/joho/godotenv"
-	"Golang-CleanArchitecture/interfaces/database"
+	"github.com/ymktmk/golang-clean-architecture/interfaces/database"
 	"gorm.io/gorm"
 )
 
