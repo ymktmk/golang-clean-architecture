@@ -1,5 +1,8 @@
 # Golang Clean Arc
 
+自前で認証・認可サーバーを作成する
+パスワードをハッシュ化する
+
 ## マイグレーション
 ```
 docker exec -it todo go run migrate/migrate.go
