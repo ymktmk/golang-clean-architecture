@@ -12,7 +12,6 @@ type UserController struct {
 	Interactor usecase.UserInteractor
 }
 
-// 依存性を定義する
 func NewUserController(sqlHandler database.SqlHandler) *UserController {
 	return &UserController{
 		Interactor: usecase.UserInteractor{
