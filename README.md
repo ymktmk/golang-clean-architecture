@@ -3,6 +3,12 @@
 自前で認証・認可サーバーを作成する
 パスワードをハッシュ化する
 
+## envファイル生成 & 記述
+
+```
+cp .env.example .env
+```
+
 ## マイグレーション
 ```
 docker exec -it todo go run migrate/migrate.go
@@ -13,8 +19,7 @@ docker exec -it todo go run migrate/migrate.go
 docker-compose exec app go run main.go
 ```
 
-
-## Create
+## Create User
 ```
 curl -X POST http://localhost:9000/users/create \
 -H 'Content-Type: application/json' \
