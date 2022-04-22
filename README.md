@@ -25,3 +25,13 @@ curl -X POST http://localhost:9000/users/create \
 -H 'Content-Type: application/json' \
 -d '{"name": "tomoki", "email": "tt@gmail.com"}'
 ```
+
+## Get User
+
+```
+curl http://localhost:9000/user
+```
+
+## テスト
+
+ユニットテストはプログラムのモジュールが正しいことを確認する自動テストの一種です。

@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	e := infrastructure.Routing()
+	e := infrastructure.NewRouter()
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 	e.Logger.Fatal(e.Start(":9000"))

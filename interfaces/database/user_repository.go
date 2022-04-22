@@ -25,7 +25,7 @@ func (repo *UserRepository) Update(uid string, u *domain.User) (user *domain.Use
 }
 
 func (repo *UserRepository) FindByUid(uid string) (user *domain.User, err error) {
-	if err = repo.Joins("Company").Where("uid=?", uid).First(&user).Error; err != nil {
+	if err = repo.Where("uid=?", uid).First(&user).Error; err != nil {
 		return
 	}
 	return
@@ -46,7 +46,7 @@ func (repo *UserRepository) FindUsersByEmail(email string) (users domain.Users, 
 }
 
 func (repo *UserRepository) FindById(userId int) (user *domain.User, err error) {
-	if err = repo.Joins("Company").Find(&user, userId).Error; err != nil {
+	if err = repo.Where("id=?", userId).First(&user).Error; err != nil {
 		return
 	}
 	return

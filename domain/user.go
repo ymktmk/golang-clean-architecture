@@ -8,7 +8,7 @@ type User struct {
     gorm.Model
     Name  string `gorm:"size:255;not null" json:"name,omitempty" validate:"required"`
     Email string `gorm:"size:255;not null;unique" json:"email,omitempty" validate:"required,email"`
-    Todos  []Todo `gorm:"foreignKey:UserID" json:"todos,omitempty"`
+    // Todos  []Todo `gorm:"foreignKey:UserID" json:"todos,omitempty"`
 }
 
 type UserCreateRequest struct {

@@ -13,7 +13,7 @@ type SqlHandler struct {
 }
 
 func NewSqlHandler() database.SqlHandler {
-    err := godotenv.Load()
+    err := godotenv.Load(".env")
 	if err != nil {
 		panic(err.Error())
 	}

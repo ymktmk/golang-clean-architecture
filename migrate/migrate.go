@@ -36,7 +36,7 @@ func main() {
 	// conn.AutoMigrate(&domain.Company{})
 	conn.AutoMigrate(
 		&domain.User{},
-		&domain.Todo{},
+		// &domain.Todo{},
 	)
 	// .AddForeignKey("company_id", "campanies(id)", "RESTRICT", "RESTRICT")
 }
