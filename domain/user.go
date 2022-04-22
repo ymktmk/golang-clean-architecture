@@ -1,11 +1,19 @@
 package domain
 
-import "github.com/ymktmk/golang-clean-architecture/domain/gorm"
+import (
+	"time"
+
+	// "github.com/ymktmk/golang-clean-architecture/domain/gorm"
+)
 
 type Users []User
 
 type User struct {
-    gorm.Model
+    // gorm.Model
+    ID        uint        `gorm:"primaryKey,autoincrement" json:"id,omitempty"`
+	CreatedAt *time.Time  `json:"created_at,omitempty"`
+	UpdatedAt *time.Time  `json:"updated_at,omitempty"`
+	DeletedAt *time.Time  `json:"deleted_at,omitempty"`
     Name  string `gorm:"size:255;not null" json:"name,omitempty" validate:"required"`
     Email string `gorm:"size:255;not null;unique" json:"email,omitempty" validate:"required,email"`
     // Todos  []Todo `gorm:"foreignKey:UserID" json:"todos,omitempty"`
