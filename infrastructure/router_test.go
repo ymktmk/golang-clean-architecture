@@ -5,7 +5,6 @@ import (
 	// "net/http"
 	// "net/http/httptest"
 	"os"
-	// "regexp"
 	"testing"
 
 	"github.com/DATA-DOG/go-sqlmock"
@@ -15,30 +14,30 @@ import (
 )
 
 func TestMain(m *testing.M) {
-	
 	code := m.Run()
 	os.Exit(code)
 }
 
 func NewDbMock() (*gorm.DB, sqlmock.Sqlmock, error) {
 	sqlDB, mock, err := sqlmock.New()
-	mockDB, err := gorm.Open(mysql.New(mysql.Config{
-		Conn: sqlDB,
-	}), &gorm.Config{})
+	mockDB, err := gorm.Open(
+		mysql.Dialector{
+			Config: &mysql.Config{
+				DriverName: "mysql",
+				Conn: sqlDB,
+				SkipInitializeWithVersion: true,
+			},
+		}, &gorm.Config{})
 	return mockDB, mock, err
 }
 
-// func TestUserGet(t *testing.T) {
+func TestUserGet(t *testing.T) {
 
-	// db, mock, err := NewDbMock()
+	// mockDB, mock, err := NewDbMock()
 	// if err != nil {       
 	// 	t.Fatal(err)
 	// }
-
 	
-
-	// mock.ExpectQuery(regexp.QuoteMeta(`SELECT * FROM "users" WHERE id = 1`))
-
 	// e := NewRouter()
 	// writer := httptest.NewRecorder()
 	// request, _ := http.NewRequest("GET", "/user", nil)
@@ -53,4 +52,4 @@ func NewDbMock() (*gorm.DB, sqlmock.Sqlmock, error) {
 	// if user.ID != 1 {
 	// 	t.Error("Cannot retrieve JSON user")
 	// }
-// }
+}

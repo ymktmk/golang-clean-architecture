@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"regexp"
 	"testing"
-	"time"
 
 	"github.com/DATA-DOG/go-sqlmock"
 
@@ -48,29 +47,22 @@ func TestStore(t *testing.T) {
 	}
 	
 	u := &domain.User{
-		CreatedAt: &time.Time{},
-		UpdatedAt: &time.Time{},
-		DeletedAt: nil,
 		Name: "tomoki",
 		Email: "victas.tt@gmail.com",
 	}
 
-	// mock設定
-	// `INSERT INTO "users" ("name", "email") VALUES ($1, $2)`
-	// mock.ExpectBegin()
+	// mock設定 OK
+	mock.ExpectBegin()
 	mock.ExpectQuery(regexp.QuoteMeta(
-		`INSERT INTO "users" ("created_at", "updated_at", "deleted_at", "name", "email") VALUES ($1, $2, $3, $4, $5)`)).
-		// クエリパラメータの指定
-		WithArgs(time.Now, time.Now, nil, u.Name, u.Email).
-		WillReturnRows(sqlmock.NewRows([]string{"name"}).AddRow(u.Name))
-	// mock.ExpectCommit()
+		`INSERT INTO "users" ("created_at", "updated_at", "deleted_at", "name", "email") VALUES ($1, $2, $3, $4, $5) RETURNING "id"`)).
+		// WithArgs(time.Now, time.Now, nil, u.Name, u.Email).
+		WillReturnRows(sqlmock.NewRows([]string{"id"}).AddRow(u.ID))
+	mock.ExpectCommit()
 	
+	// SQL実行
 	repo := &database.UserRepository{SqlHandler: DummyHandler(mockDB)}
 	user, err := repo.Store(u)
-	// if err != nil {
-	// 	t.Fatalf("failed to create user: %s", err)
-	// }
-	fmt.Println(user)
+	fmt.Println(user.ID)
 }
 
 func TestFindById(t *testing.T) {
@@ -82,11 +74,10 @@ func TestFindById(t *testing.T) {
 	repo := &database.UserRepository{SqlHandler: DummyHandler(mockDB)}
 	
 	var id int = 1
-	var name string = "tomoki"
+	// name  := "tomoki"
 	mock.ExpectQuery(regexp.QuoteMeta(`SELECT * FROM "users" WHERE (id = $1)`)).
-	// クエリパラメータの指定
 	WithArgs(id).
-	WillReturnRows(sqlmock.NewRows([]string{"id", "name"}).AddRow(id, name))
+	WillReturnRows(sqlmock.NewRows([]string{"id"}).AddRow(id))
 
 	user, err := repo.FindById(id)
 	// if err != nil {
