@@ -12,28 +12,22 @@ import (
 	"github.com/ymktmk/golang-clean-architecture/infrastructure"
 	"github.com/ymktmk/golang-clean-architecture/interfaces/database"
 
-	// "gorm.io/driver/mysql"
-	"gorm.io/driver/postgres"
+	"gorm.io/driver/mysql"
+	// "gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
 func NewDbMock() (*gorm.DB, sqlmock.Sqlmock, error) {
 	sqlDB, mock, err := sqlmock.New()
 	// MySQL
-	// mockDB, err := gorm.Open(
-	// 	postgres.Dialector{
-	// 		Config: &mysql.Config{
-	// 			DriverName: "mysql",
-	// 			Conn: sqlDB,
-	// 			SkipInitializeWithVersion: true,
-	// 		},
-	// 	}, &gorm.Config{})
-
-	// Postgres
-	mockDB, err := gorm.Open(postgres.New(postgres.Config{
-		Conn: sqlDB,
-	}), &gorm.Config{})
-
+	mockDB, err := gorm.Open(
+		mysql.Dialector{
+			Config: &mysql.Config{
+				DriverName: "mysql",
+				Conn: sqlDB,
+				SkipInitializeWithVersion: true,
+			},
+		}, &gorm.Config{})
 	return mockDB, mock, err
 }
 
@@ -48,25 +42,22 @@ func TestStore(t *testing.T) {
 	if err != nil {
 		t.Errorf("Failed to initialize mock DB: %v", err)
 	}
-	// test data
-	u := &domain.User{
-		Name: "tomoki",
-		Email: "victas.tt@gmail.com",
-	}
+	
 	// mock設定
 	mock.ExpectBegin()
 	mock.ExpectQuery(regexp.QuoteMeta(
-		`INSERT INTO "users" ("created_at", "updated_at","deleted_at", "name", "email") VALUES VALUES ($1,$2,$3,$4,$5) RETURNING "id"`)).
-		// `INSERT INTO users (created_at, updated_at, deleted_at, name, email) VALUES(?, ?, ?, ?, ?)`)).
-		WithArgs(time.Now(), time.Now(), nil, "tomoki", "victas.tt@gmail.com").
+		`INSERT INTO users (created_at, updated_at, deleted_at, name, email) VALUES(?, ?, ?, ?, ?)`)).
+		WithArgs(time.Now(), time.Now(), nil, "tomoki", "example@gmail.com").
 		WillReturnRows(sqlmock.NewRows([]string{"id"}).AddRow(1))
 	mock.ExpectCommit()
+
 	// SQL実行
-	mockDB.Create(u)
-	fmt.Println(u.ID)
-	if u.Name != "tomoki" {
-		t.Fatal("登録されるべきNameと異なっている")
+	u := &domain.User{
+		Name: "tomoki",
+		Email: "example@gmail.com",
 	}
+	mockDB.Create(u)
+	fmt.Println(u)
 
 	// Repository Test
 	// repo := &database.UserRepository{SqlHandler: DummyHandler(mockDB)}
@@ -76,6 +67,16 @@ func TestStore(t *testing.T) {
 	// 	t.Fatal(err)
 	// }
 }
+
+
+
+
+
+
+
+
+
+
 
 func TestFindById(t *testing.T) {
 	mockDB, mock, err := NewDbMock()
