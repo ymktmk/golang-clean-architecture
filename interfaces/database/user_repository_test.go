@@ -10,20 +10,25 @@ import (
 	"github.com/ymktmk/golang-clean-architecture/infrastructure"
 	"github.com/ymktmk/golang-clean-architecture/interfaces/database"
 
-	"gorm.io/driver/mysql"
+	// "gorm.io/driver/mysql"
+	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
 func NewDbMock() (*gorm.DB, sqlmock.Sqlmock, error) {
 	sqlDB, mock, err := sqlmock.New()
-	mockDB, err := gorm.Open(
-		mysql.Dialector{
-			Config: &mysql.Config{
-				DriverName: "mysql",
-				Conn: sqlDB,
-				SkipInitializeWithVersion: true,
-			},
-		}, &gorm.Config{})
+	// mockDB, err := gorm.Open(
+	// 	mysql.Dialector{
+	// 		Config: &mysql.Config{
+	// 			DriverName: "mysql",
+	// 			Conn: sqlDB,
+	// 			SkipInitializeWithVersion: true,
+	// 		},
+	// 	}, &gorm.Config{})
+	mockDB, err := gorm.Open(postgres.New(postgres.Config{
+		Conn: sqlDB,
+	}), &gorm.Config{})
+	
 	return mockDB, mock, err
 }
 
@@ -40,28 +45,27 @@ func TestStore(t *testing.T) {
 	}
 	
 	u := &domain.User{
-		ID: 1,
 		Name: "tomoki",
 		Email: "victas.tt@gmail.com",
 	}
 	
 	// mock設定
+	rows := sqlmock.NewRows([]string{"id"}).AddRow(1)
 	mock.ExpectBegin()
 	mock.ExpectQuery(regexp.QuoteMeta(
-		`INSERT INTO users (name, email) VALUES (?, ?)`)).
-		WithArgs(u.Name, u.Email).
-		WillReturnRows(sqlmock.NewRows([]string{"id", "name", "email"}).AddRow(1, u.Name, u.Email))
+		`INSERT INTO "users" ("created_at","updated_at","deleted_at","name","email") VALUES ($1,$2,$3,$4,$5) RETURNING "id"`)).
+		WillReturnRows(rows)
 	mock.ExpectCommit()
 
 	// SQL実行
 	if err = mockDB.Create(u).Error; err != nil {
 		t.Error(err)
 	}
-	// fmt.Println(u)
+	fmt.Println(u)
 	
-	// if err := mock.ExpectationsWereMet(); err != nil {
-	// 	t.Errorf("Test Create User: %v", err)
-	// }
+	if err := mock.ExpectationsWereMet(); err != nil {
+		t.Errorf("Test Create User: %v", err)
+	}
 
 	// repo := &database.UserRepository{SqlHandler: DummyHandler(mockDB)}
 	// user, err := repo.Store(u)
