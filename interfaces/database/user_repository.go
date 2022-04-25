@@ -17,7 +17,7 @@ func (repo *UserRepository) Store(u *domain.User) (user *domain.User, err error)
 }
 
 func (repo *UserRepository) Update(uid string, u *domain.User) (user *domain.User, err error) {
-	if err = repo.Model(&user).Where("uid=?", uid).Update("name", u.Name).Error; err != nil {
+	if err = repo.Model(&user).Where("uid = ?", uid).Update("name", u.Name).Error; err != nil {
 		return
 	}
 	user = u
@@ -31,7 +31,7 @@ func (repo *UserRepository) FindByUid(uid string) (user *domain.User, err error)
 	return
 }
 
-func (repo *UserRepository) FindByEmail(email string) (user domain.User, err error) {
+func (repo *UserRepository) FindByEmail(email string) (user *domain.User, err error) {
 	if err = repo.Where("email = ?", email).First(&user).Error; err != nil {
 		return
 	}
@@ -52,7 +52,7 @@ func (repo *UserRepository) FindById(userId int) (user *domain.User, err error) 
 	return
 }
 
-func (repo *UserRepository) DeleteById(user domain.User) (err error) {
+func (repo *UserRepository) DeleteById(user *domain.User) (err error) {
 	if err = repo.Delete(&user).Error; err != nil {
 		return
 	}

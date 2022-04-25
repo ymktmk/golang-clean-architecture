@@ -8,10 +8,10 @@ type UserRepository interface {
 	Store(u *domain.User) (user *domain.User, err error)
 	Update(uid string, u *domain.User) (user *domain.User, err error)
 	FindByUid(uid string) (user *domain.User, err error)
-	FindByEmail(email string) (user domain.User, err error)
+	FindByEmail(email string) (user *domain.User, err error)
 	FindUsersByEmail(email string) (users domain.Users, err error)
 	FindById(userId int) (user *domain.User, err error)
-	DeleteById(user domain.User) (err error)
+	DeleteById(user *domain.User) (err error)
 }
 
 type UserInteractor struct {
@@ -42,7 +42,7 @@ func (interactor *UserInteractor) UserByUid(uid string) (user *domain.User, err 
     return
 }
 
-func (interactor *UserInteractor) UserByEmail(email string) (user domain.User, err error) {
+func (interactor *UserInteractor) UserByEmail(email string) (user *domain.User, err error) {
     user, err = interactor.UserRepository.FindByEmail(email)
     return
 }

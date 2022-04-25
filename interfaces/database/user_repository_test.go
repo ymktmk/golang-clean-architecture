@@ -40,7 +40,6 @@ func TestStore(t *testing.T) {
 	
 	// mock設定
 	rows := sqlmock.NewRows([]string{"id"}).AddRow(1)
-
 	mock.ExpectBegin()
 	mock.ExpectQuery(regexp.QuoteMeta(
 		`INSERT INTO "users" ("created_at","updated_at","deleted_at","name","email") VALUES ($1,$2,$3,$4,$5)`)).
@@ -70,7 +69,6 @@ func TestFindById(t *testing.T) {
 	// mock設定
 	rows := sqlmock.NewRows([]string{"id", "name", "email", "created_at", "updated_at", "deleted_at"}).
 	AddRow(1, "tomoki", "example@gmail.com", time.Now(), time.Now(), nil)
-	
 	mock.ExpectQuery(regexp.QuoteMeta(
 		`SELECT * FROM "users" WHERE id = $1`)).
 		WithArgs(1).
