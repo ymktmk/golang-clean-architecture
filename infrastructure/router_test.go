@@ -41,23 +41,26 @@ func TestCreate(t *testing.T) {
 		t.Fatal(err)
 	}
 	
-	// server 
-	userController := controllers.NewUserController(DummyHandler(mockDB))
-	e := echo.New()
-	e.Validator = &infrastructure.CustomValidator{Validator: validator.New()}
-	e.POST("/users/create", userController.Create)
-	
 	// mock設定
+	rows := sqlmock.NewRows([]string{"id", "name", "email", "created_at", "updated_at", "deleted_at"})
+	mock.ExpectQuery(regexp.QuoteMeta(
+		`SELECT * FROM "users" WHERE email = $1`)).
+		WithArgs("tt@gmail.com").
+		WillReturnRows(rows)
+
 	mock.ExpectBegin()
 	mock.ExpectQuery(regexp.QuoteMeta(
 		`INSERT INTO "users" ("created_at","updated_at","deleted_at","name","email") VALUES ($1,$2,$3,$4,$5)`)).
 		WillReturnRows(sqlmock.NewRows([]string{"id"}).AddRow(1))
 	mock.ExpectCommit()
+	
+	// server 
+	userController := controllers.NewUserController(DummyHandler(mockDB))
+	e := echo.New()
+	e.Validator = &infrastructure.CustomValidator{Validator: validator.New()}
+	e.POST("/users/create", userController.Create)
 
-	// recorder
 	writer := httptest.NewRecorder()
-
-	// request
 	payload := strings.NewReader(`{"name": "tomoki", "email": "tt@gmail.com"}`)
 	request, _ := http.NewRequest("POST", "/users/create", payload)
 	request.Header.Set("Content-Type", "application/json")
@@ -83,10 +86,6 @@ func TestShow(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	userController := controllers.NewUserController(DummyHandler(mockDB))
-	e := echo.New()
-	e.GET("/user", userController.Show)
-
 	// mock設定
 	rows := sqlmock.NewRows([]string{"id", "name", "email", "created_at", "updated_at", "deleted_at"}).
 	AddRow(1, "tomoki", "example@gmail.com", time.Now(), time.Now(), nil)
@@ -95,10 +94,12 @@ func TestShow(t *testing.T) {
 		WithArgs(1).
 		WillReturnRows(rows)
 
-	// recorder
+      // server
+	userController := controllers.NewUserController(DummyHandler(mockDB))
+	e := echo.New()
+	e.GET("/user", userController.Show)
+
 	writer := httptest.NewRecorder()
-	
-	// request
 	request, _ := http.NewRequest("GET", "/user", nil)
 	e.ServeHTTP(writer, request)
 	

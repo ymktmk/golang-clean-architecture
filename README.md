@@ -34,6 +34,5 @@ curl http://localhost:9000/user
 
 ## テスト
 
-単体テスト・・・プログラムのモジュールが正しいことを確認する自動テストの１種です。
-mock test・・・擬似的なテスト。sqlmockのようなDBの代わりにSQLドライバのような振る舞いをしてくれるモックのライブラリです。
-E2Eテスト・・・実際にアプリケーションを使うときのようにブラウザからテストすること。Seleniumなどを用いる。
+mockではmock.ExpectExec("UPDATE products").WillReturnResult(sqlmock.NewResult(1, 1))
+「こういうSQLが来た時はこういう結果を返す」という指定ができる
