@@ -25,21 +25,21 @@ func (repo *UserRepository) Update(uid string, u *domain.User) (user *domain.Use
 }
 
 func (repo *UserRepository) FindByUid(uid string) (user *domain.User, err error) {
-	if err = repo.Where("uid=?", uid).First(&user).Error; err != nil {
+	if err = repo.Where("uid = ?", uid).First(&user).Error; err != nil {
 		return
 	}
 	return
 }
 
 func (repo *UserRepository) FindByEmail(email string) (user domain.User, err error) {
-	if err = repo.Where("email=?", email).First(&user).Error; err != nil {
+	if err = repo.Where("email = ?", email).First(&user).Error; err != nil {
 		return
 	}
 	return
 }
 
 func (repo *UserRepository) FindUsersByEmail(email string) (users domain.Users, err error) {
-	if err = repo.Where("email=?", email).Find(&users).Error; err != nil {
+	if err = repo.Where("email = ?", email).Find(&users).Error; err != nil {
 		return
 	}
 	return
