@@ -83,4 +83,8 @@ func TestFindById(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+
+	if err := mock.ExpectationsWereMet(); err != nil {
+		t.Errorf("Test Find User: %v", err)
+	}
 }
