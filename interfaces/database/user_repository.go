@@ -46,7 +46,7 @@ func (repo *UserRepository) FindUsersByEmail(email string) (users domain.Users, 
 }
 
 func (repo *UserRepository) FindById(userId int) (user *domain.User, err error) {
-	if err = repo.Where("id=?", userId).First(&user).Error; err != nil {
+	if err = repo.Where("id = ?", userId).First(&user).Error; err != nil {
 		return
 	}
 	return
