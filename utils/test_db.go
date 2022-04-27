@@ -16,7 +16,7 @@ func NewDbMock() (*gorm.DB, sqlmock.Sqlmock, error) {
 	return mockDB, mock, err
 }
 
-func DummyHandler(conn *gorm.DB) database.SqlHandler {
+func SqlMockHandler(conn *gorm.DB) database.SqlHandler {
 	sqlHandler := new(infrastructure.SqlHandler)
 	sqlHandler.Conn = conn
 	return sqlHandler

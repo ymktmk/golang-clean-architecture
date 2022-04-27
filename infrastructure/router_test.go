@@ -2,7 +2,6 @@ package infrastructure_test
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"regexp"
@@ -31,7 +30,7 @@ func TestCreate(t *testing.T) {
 	rows := sqlmock.NewRows([]string{"id", "name", "email", "created_at", "updated_at", "deleted_at"})
 	mock.ExpectQuery(regexp.QuoteMeta(
 		`SELECT * FROM "users" WHERE email = $1`)).
-		WithArgs("tt@gmail.com").
+		WithArgs("example@gmail.com").
 		WillReturnRows(rows)
 
 	mock.ExpectBegin()
@@ -41,29 +40,25 @@ func TestCreate(t *testing.T) {
 	mock.ExpectCommit()
 	
 	// server 
-	userController := controllers.NewUserController(utils.DummyHandler(mockDB))
+	userController := controllers.NewUserController(utils.SqlMockHandler(mockDB))
 	e := echo.New()
 	e.Validator = &infrastructure.CustomValidator{Validator: validator.New()}
 	e.POST("/users/create", userController.Create)
 
 	writer := httptest.NewRecorder()
-	body := strings.NewReader(`{"name": "tomoki", "email": "tt@gmail.com"}`)
+	body := strings.NewReader(`{"name": "tomoki", "email": "example@gmail.com"}`)
 	request, _ := http.NewRequest("POST", "/users/create", body)
 	request.Header.Set("Content-Type", "application/json")
 	e.ServeHTTP(writer, request)
 	
-	if writer.Code != 200 {
-		t.Errorf("Response code is %v", writer.Code)
-	}
+	assert.Equal(t, 200, writer.Code)
 
 	// response bodyの検証
 	var user domain.User
 	json.Unmarshal(writer.Body.Bytes(), &user)
-	if user.ID != 1 {
+	if user.ID != 1 && user.Name != "tomoki" && user.Email != "example@gmail.com" {
 		t.Error("Cannot retrieve JSON user")
 	}
-
-	fmt.Println(user)
 }
 
 func TestShow(t *testing.T) {
@@ -95,7 +90,7 @@ func TestShow(t *testing.T) {
 		WillReturnRows(rows)
 
       // server
-	userController := controllers.NewUserController(utils.DummyHandler(mockDB))
+	userController := controllers.NewUserController(utils.SqlMockHandler(mockDB))
 	e := echo.New()
 	e.GET("/user", userController.Show)
 
@@ -103,11 +98,6 @@ func TestShow(t *testing.T) {
 	request, _ := http.NewRequest("GET", "/user", nil)
 	e.ServeHTTP(writer, request)
 	
-	// status code validation
-	if writer.Code != 200 {
-		t.Errorf("Response code is %v", writer.Code)
-	}
-
-	// json response validation
+	assert.Equal(t, 200, writer.Code)
 	assert.JSONEq(t, string(user_json), string(writer.Body.Bytes()))
 }

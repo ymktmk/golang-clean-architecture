@@ -33,7 +33,7 @@ func TestStore(t *testing.T) {
 	mock.ExpectCommit()
 
 	// repository 初期化
-	repo := &database.UserRepository{SqlHandler: utils.DummyHandler(mockDB)}
+	repo := &database.UserRepository{SqlHandler: utils.SqlMockHandler(mockDB)}
 	user, err := repo.Store(u)
 	fmt.Println(user)
 	if err != nil {
@@ -61,7 +61,7 @@ func TestFindById(t *testing.T) {
 		WillReturnRows(rows)
 
       // repository 初期化
-	repo := &database.UserRepository{SqlHandler: utils.DummyHandler(mockDB)}
+	repo := &database.UserRepository{SqlHandler: utils.SqlMockHandler(mockDB)}
 	user, err := repo.FindById(1)
 	fmt.Println(user)
 	if err != nil {
