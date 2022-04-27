@@ -50,7 +50,6 @@ func (controller *UserController) Create(c echo.Context) (err error) {
 }
 
 func (controller *UserController) Show(c echo.Context) (err error) {
-	// １番目
 	user, err := controller.Interactor.UserById(1)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())

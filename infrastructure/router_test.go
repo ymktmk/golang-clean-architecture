@@ -12,31 +12,17 @@ import (
 
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/labstack/echo"
+	"github.com/stretchr/testify/assert"
 	"github.com/ymktmk/golang-clean-architecture/domain"
+	"github.com/ymktmk/golang-clean-architecture/domain/gorm"
 	"github.com/ymktmk/golang-clean-architecture/infrastructure"
 	"github.com/ymktmk/golang-clean-architecture/interfaces/controllers"
-	"github.com/ymktmk/golang-clean-architecture/interfaces/database"
+	"github.com/ymktmk/golang-clean-architecture/utils"
 	"gopkg.in/go-playground/validator.v9"
-	"gorm.io/driver/postgres"
-	"gorm.io/gorm"
 )
 
-func NewDbMock() (*gorm.DB, sqlmock.Sqlmock, error) {
-	sqlDB, mock, err := sqlmock.New()
-	mockDB, err := gorm.Open(postgres.New(postgres.Config{
-		Conn: sqlDB,
-	}), &gorm.Config{})
-	return mockDB, mock, err
-}
-
-func DummyHandler(conn *gorm.DB) database.SqlHandler {
-	sqlHandler := new(infrastructure.SqlHandler)
-	sqlHandler.Conn = conn
-	return sqlHandler
-}
-
 func TestCreate(t *testing.T) {
-	mockDB, mock, err := NewDbMock()
+	mockDB, mock, err := utils.NewDbMock()
 	if err != nil {       
 		t.Fatal(err)
 	}
@@ -55,14 +41,14 @@ func TestCreate(t *testing.T) {
 	mock.ExpectCommit()
 	
 	// server 
-	userController := controllers.NewUserController(DummyHandler(mockDB))
+	userController := controllers.NewUserController(utils.DummyHandler(mockDB))
 	e := echo.New()
 	e.Validator = &infrastructure.CustomValidator{Validator: validator.New()}
 	e.POST("/users/create", userController.Create)
 
 	writer := httptest.NewRecorder()
-	payload := strings.NewReader(`{"name": "tomoki", "email": "tt@gmail.com"}`)
-	request, _ := http.NewRequest("POST", "/users/create", payload)
+	body := strings.NewReader(`{"name": "tomoki", "email": "tt@gmail.com"}`)
+	request, _ := http.NewRequest("POST", "/users/create", body)
 	request.Header.Set("Content-Type", "application/json")
 	e.ServeHTTP(writer, request)
 	
@@ -81,21 +67,35 @@ func TestCreate(t *testing.T) {
 }
 
 func TestShow(t *testing.T) {
-	mockDB, mock, err := NewDbMock()
+	mockDB, mock, err := utils.NewDbMock()
 	if err != nil {       
 		t.Fatal(err)
 	}
 
+	// response structure definition
+	user := &domain.User{
+		Model: gorm.Model{
+			ID: 1,
+			CreatedAt: time.Now(),
+			UpdatedAt: time.Now(),
+			DeletedAt: time.Time{},
+		},
+		Name: "tomoki",
+		Email: "example@gmail.com",
+	}
+
+	user_json, _ := json.Marshal(user)
+	
 	// mock設定
 	rows := sqlmock.NewRows([]string{"id", "name", "email", "created_at", "updated_at", "deleted_at"}).
-	AddRow(1, "tomoki", "example@gmail.com", time.Now(), time.Now(), nil)
+	AddRow(user.ID, user.Name, user.Email, user.CreatedAt, user.UpdatedAt, user.DeletedAt)
 	mock.ExpectQuery(regexp.QuoteMeta(
 		`SELECT * FROM "users" WHERE id = $1`)).
-		WithArgs(1).
+		WithArgs(user.ID).
 		WillReturnRows(rows)
 
       // server
-	userController := controllers.NewUserController(DummyHandler(mockDB))
+	userController := controllers.NewUserController(utils.DummyHandler(mockDB))
 	e := echo.New()
 	e.GET("/user", userController.Show)
 
@@ -103,16 +103,11 @@ func TestShow(t *testing.T) {
 	request, _ := http.NewRequest("GET", "/user", nil)
 	e.ServeHTTP(writer, request)
 	
+	// status code validation
 	if writer.Code != 200 {
 		t.Errorf("Response code is %v", writer.Code)
 	}
 
-	// response bodyの検証
-	var user domain.User
-	json.Unmarshal(writer.Body.Bytes(), &user)
-	if user.ID != 1 {
-		t.Error("Cannot retrieve JSON user")
-	}
-
-	fmt.Println(user)
+	// json response validation
+	assert.JSONEq(t, string(user_json), string(writer.Body.Bytes()))
 }

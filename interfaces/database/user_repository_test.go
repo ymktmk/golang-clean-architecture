@@ -5,30 +5,16 @@ import (
 	"regexp"
 	"testing"
 	"time"
+
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/ymktmk/golang-clean-architecture/domain"
-	"github.com/ymktmk/golang-clean-architecture/infrastructure"
 	"github.com/ymktmk/golang-clean-architecture/interfaces/database"
-	"gorm.io/driver/postgres"
-	"gorm.io/gorm"
+	"github.com/ymktmk/golang-clean-architecture/utils"
 )
 
-func NewDbMock() (*gorm.DB, sqlmock.Sqlmock, error) {
-	sqlDB, mock, err := sqlmock.New()
-	mockDB, err := gorm.Open(postgres.New(postgres.Config{
-		Conn: sqlDB,
-	}), &gorm.Config{})
-	return mockDB, mock, err
-}
-
-func DummyHandler(conn *gorm.DB) database.SqlHandler {
-	sqlHandler := new(infrastructure.SqlHandler)
-	sqlHandler.Conn = conn
-	return sqlHandler
-}
 
 func TestStore(t *testing.T) {
-	mockDB, mock, err := NewDbMock()
+	mockDB, mock, err := utils.NewDbMock()
 	if err != nil {
 		t.Errorf("Failed to initialize mock DB: %v", err)
 	}
@@ -47,7 +33,7 @@ func TestStore(t *testing.T) {
 	mock.ExpectCommit()
 
 	// repository 初期化
-	repo := &database.UserRepository{SqlHandler: DummyHandler(mockDB)}
+	repo := &database.UserRepository{SqlHandler: utils.DummyHandler(mockDB)}
 	user, err := repo.Store(u)
 	fmt.Println(user)
 	if err != nil {
@@ -61,7 +47,7 @@ func TestStore(t *testing.T) {
 
 
 func TestFindById(t *testing.T) {
-	mockDB, mock, err := NewDbMock()
+	mockDB, mock, err := utils.NewDbMock()
 	if err != nil {
 		t.Errorf("Failed to initialize mock DB: %v", err)
 	}
@@ -75,7 +61,7 @@ func TestFindById(t *testing.T) {
 		WillReturnRows(rows)
 
       // repository 初期化
-	repo := &database.UserRepository{SqlHandler: DummyHandler(mockDB)}
+	repo := &database.UserRepository{SqlHandler: utils.DummyHandler(mockDB)}
 	user, err := repo.FindById(1)
 	fmt.Println(user)
 	if err != nil {
