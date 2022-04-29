@@ -52,7 +52,7 @@ func TestCreate(t *testing.T) {
 	request.Header.Set("Content-Type", "application/json")
 	e.ServeHTTP(writer, request)
 
-	assert.Equal(t, 200, writer.Code)
+	assert.Equal(t, http.StatusOK, writer.Code)
 
 	// response bodyの検証
 	var user domain.User
@@ -90,15 +90,15 @@ func TestShow(t *testing.T) {
 		WithArgs(user.ID).
 		WillReturnRows(rows)
 
-		// server
+	// server
 	userController := controllers.NewUserController(utils.SqlMockHandler(mockDB))
 	e := echo.New()
 	e.GET("/user", userController.Show)
-
+	
 	writer := httptest.NewRecorder()
 	request, _ := http.NewRequest("GET", "/user", nil)
 	e.ServeHTTP(writer, request)
 
-	assert.Equal(t, 200, writer.Code)
+	assert.Equal(t, http.StatusOK, writer.Code)
 	assert.JSONEq(t, string(user_json), string(writer.Body.Bytes()))
 }
