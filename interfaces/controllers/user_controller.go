@@ -37,7 +37,7 @@ func (controller *UserController) Create(c echo.Context) (err error) {
 	var users domain.Users
 	users, err = controller.Interactor.ExistUserByEmail(ucr.Email)
 	if len(users) != 0 {
-		return echo.NewHTTPError(http.StatusBadRequest, "入力されたメールアドレスは既に登録されています。")
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 	// DTOをUserのEntityに変換
 	u := &domain.User{

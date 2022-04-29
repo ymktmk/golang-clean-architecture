@@ -30,5 +30,8 @@ func (controller *TodoController) Create(c echo.Context) (err error) {
 	uid := c.Get("uid").(string)
 	// userを取得する
 	user, err := controller.Interactor.UserByUid(uid)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
 	return c.JSON(http.StatusOK, user)
 }

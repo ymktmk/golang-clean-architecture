@@ -56,7 +56,9 @@ func TestCreate(t *testing.T) {
 
 	// response bodyの検証
 	var user domain.User
-	json.Unmarshal(writer.Body.Bytes(), &user)
+	if err = json.Unmarshal(writer.Body.Bytes(), &user); err != nil {
+		t.Error(err)
+	}
 	if user.ID != 1 && user.Name != "tomoki" && user.Email != "example@gmail.com" {
 		t.Error("Cannot retrieve JSON user")
 	}
@@ -94,11 +96,11 @@ func TestShow(t *testing.T) {
 	userController := controllers.NewUserController(utils.SqlMockHandler(mockDB))
 	e := echo.New()
 	e.GET("/user", userController.Show)
-	
+
 	writer := httptest.NewRecorder()
 	request, _ := http.NewRequest("GET", "/user", nil)
 	e.ServeHTTP(writer, request)
 
 	assert.Equal(t, http.StatusOK, writer.Code)
-	assert.JSONEq(t, string(user_json), string(writer.Body.Bytes()))
+	assert.JSONEq(t, string(user_json), writer.Body.String())
 }
