@@ -76,7 +76,7 @@ func TestShow(t *testing.T) {
 			ID:        1,
 			CreatedAt: time.Now(),
 			UpdatedAt: time.Now(),
-			DeletedAt: time.Time{},
+			DeletedAt: nil,
 		},
 		Name:  "tomoki",
 		Email: "example@gmail.com",
