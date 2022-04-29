@@ -25,3 +25,14 @@ curl -X POST http://localhost:9000/users/create \
 -H 'Content-Type: application/json' \
 -d '{"name": "tomoki", "email": "tt@gmail.com"}'
 ```
+
+## Get User
+
+```
+curl http://localhost:9000/user
+```
+
+## テスト
+
+mockではmock.ExpectExec("UPDATE products").WillReturnResult(sqlmock.NewResult(1, 1))
+「こういうSQLが来た時はこういう結果を返す」という指定ができる
