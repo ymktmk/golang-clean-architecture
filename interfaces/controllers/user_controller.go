@@ -2,9 +2,12 @@ package controllers
 
 import (
 	"net/http"
+
 	"github.com/labstack/echo"
+
 	"github.com/ymktmk/golang-clean-architecture/domain"
 	"github.com/ymktmk/golang-clean-architecture/interfaces/database"
+
 	"github.com/ymktmk/golang-clean-architecture/usecase"
 )
 
@@ -38,7 +41,7 @@ func (controller *UserController) Create(c echo.Context) (err error) {
 	}
 	// DTOをUserのEntityに変換
 	u := &domain.User{
-		Name: ucr.UserName, 
+		Name:  ucr.UserName,
 		Email: ucr.Email,
 	}
 	// 同じメールアドレス、uidでerr返ってくる → 同じものを挿入したときidは進む

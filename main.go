@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/labstack/echo/middleware"
+
 	"github.com/ymktmk/golang-clean-architecture/infrastructure"
 )
 

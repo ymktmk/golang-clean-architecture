@@ -7,23 +7,23 @@ import (
 	"time"
 
 	"github.com/DATA-DOG/go-sqlmock"
+
 	"github.com/ymktmk/golang-clean-architecture/domain"
 	"github.com/ymktmk/golang-clean-architecture/interfaces/database"
 	"github.com/ymktmk/golang-clean-architecture/utils"
 )
-
 
 func TestStore(t *testing.T) {
 	mockDB, mock, err := utils.NewDbMock()
 	if err != nil {
 		t.Errorf("Failed to initialize mock DB: %v", err)
 	}
-	
+
 	u := &domain.User{
-		Name: "sheep",
+		Name:  "sheep",
 		Email: "example@gmail.com",
 	}
-	
+
 	// mock設定
 	rows := sqlmock.NewRows([]string{"id"}).AddRow(1)
 	mock.ExpectBegin()
@@ -39,12 +39,11 @@ func TestStore(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	
+
 	if err := mock.ExpectationsWereMet(); err != nil {
 		t.Errorf("Test Create User: %v", err)
 	}
 }
-
 
 func TestFindById(t *testing.T) {
 	mockDB, mock, err := utils.NewDbMock()
@@ -54,13 +53,13 @@ func TestFindById(t *testing.T) {
 
 	// mock設定
 	rows := sqlmock.NewRows([]string{"id", "name", "email", "created_at", "updated_at", "deleted_at"}).
-	AddRow(1, "tomoki", "example@gmail.com", time.Now(), time.Now(), nil)
+		AddRow(1, "tomoki", "example@gmail.com", time.Now(), time.Now(), nil)
 	mock.ExpectQuery(regexp.QuoteMeta(
 		`SELECT * FROM "users" WHERE id = $1`)).
 		WithArgs(1).
 		WillReturnRows(rows)
 
-      // repository 初期化
+		// repository 初期化
 	repo := &database.UserRepository{SqlHandler: utils.SqlMockHandler(mockDB)}
 	user, err := repo.FindById(1)
 	fmt.Println(user)

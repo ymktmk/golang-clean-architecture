@@ -2,10 +2,11 @@ package utils
 
 import (
 	"github.com/DATA-DOG/go-sqlmock"
-	"github.com/ymktmk/golang-clean-architecture/infrastructure"
-	"github.com/ymktmk/golang-clean-architecture/interfaces/database"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+
+	"github.com/ymktmk/golang-clean-architecture/infrastructure"
+	"github.com/ymktmk/golang-clean-architecture/interfaces/database"
 )
 
 func NewDbMock() (*gorm.DB, sqlmock.Sqlmock, error) {

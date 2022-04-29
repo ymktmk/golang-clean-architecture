@@ -1,9 +1,10 @@
 package controllers
 
 import (
+	"net/http"
+
 	"github.com/ymktmk/golang-clean-architecture/interfaces/database"
 	"github.com/ymktmk/golang-clean-architecture/usecase"
-	"net/http"
 
 	"github.com/labstack/echo"
 )
@@ -17,7 +18,7 @@ func NewTodoController(sqlHandler database.SqlHandler) *TodoController {
 	return &TodoController{
 		Interactor: usecase.TodoInteractor{
 			TodoRepository: &database.TodoRepository{
-			SqlHandler: sqlHandler,
+				SqlHandler: sqlHandler,
 			},
 		},
 	}

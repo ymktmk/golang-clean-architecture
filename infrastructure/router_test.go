@@ -12,20 +12,21 @@ import (
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/labstack/echo"
 	"github.com/stretchr/testify/assert"
+	"gopkg.in/go-playground/validator.v9"
+
 	"github.com/ymktmk/golang-clean-architecture/domain"
 	"github.com/ymktmk/golang-clean-architecture/domain/gorm"
 	"github.com/ymktmk/golang-clean-architecture/infrastructure"
 	"github.com/ymktmk/golang-clean-architecture/interfaces/controllers"
 	"github.com/ymktmk/golang-clean-architecture/utils"
-	"gopkg.in/go-playground/validator.v9"
 )
 
 func TestCreate(t *testing.T) {
 	mockDB, mock, err := utils.NewDbMock()
-	if err != nil {       
+	if err != nil {
 		t.Fatal(err)
 	}
-	
+
 	// mock設定
 	rows := sqlmock.NewRows([]string{"id", "name", "email", "created_at", "updated_at", "deleted_at"})
 	mock.ExpectQuery(regexp.QuoteMeta(
@@ -38,8 +39,8 @@ func TestCreate(t *testing.T) {
 		`INSERT INTO "users" ("created_at","updated_at","deleted_at","name","email") VALUES ($1,$2,$3,$4,$5)`)).
 		WillReturnRows(sqlmock.NewRows([]string{"id"}).AddRow(1))
 	mock.ExpectCommit()
-	
-	// server 
+
+	// server
 	userController := controllers.NewUserController(utils.SqlMockHandler(mockDB))
 	e := echo.New()
 	e.Validator = &infrastructure.CustomValidator{Validator: validator.New()}
@@ -50,7 +51,7 @@ func TestCreate(t *testing.T) {
 	request, _ := http.NewRequest("POST", "/users/create", body)
 	request.Header.Set("Content-Type", "application/json")
 	e.ServeHTTP(writer, request)
-	
+
 	assert.Equal(t, 200, writer.Code)
 
 	// response bodyの検証
@@ -63,33 +64,33 @@ func TestCreate(t *testing.T) {
 
 func TestShow(t *testing.T) {
 	mockDB, mock, err := utils.NewDbMock()
-	if err != nil {       
+	if err != nil {
 		t.Fatal(err)
 	}
 
 	// response structure definition
 	user := &domain.User{
 		Model: gorm.Model{
-			ID: 1,
+			ID:        1,
 			CreatedAt: time.Now(),
 			UpdatedAt: time.Now(),
 			DeletedAt: time.Time{},
 		},
-		Name: "tomoki",
+		Name:  "tomoki",
 		Email: "example@gmail.com",
 	}
 
 	user_json, _ := json.Marshal(user)
-	
+
 	// mock設定
 	rows := sqlmock.NewRows([]string{"id", "name", "email", "created_at", "updated_at", "deleted_at"}).
-	AddRow(user.ID, user.Name, user.Email, user.CreatedAt, user.UpdatedAt, user.DeletedAt)
+		AddRow(user.ID, user.Name, user.Email, user.CreatedAt, user.UpdatedAt, user.DeletedAt)
 	mock.ExpectQuery(regexp.QuoteMeta(
 		`SELECT * FROM "users" WHERE id = $1`)).
 		WithArgs(user.ID).
 		WillReturnRows(rows)
 
-      // server
+		// server
 	userController := controllers.NewUserController(utils.SqlMockHandler(mockDB))
 	e := echo.New()
 	e.GET("/user", userController.Show)
@@ -97,7 +98,7 @@ func TestShow(t *testing.T) {
 	writer := httptest.NewRecorder()
 	request, _ := http.NewRequest("GET", "/user", nil)
 	e.ServeHTTP(writer, request)
-	
+
 	assert.Equal(t, 200, writer.Code)
 	assert.JSONEq(t, string(user_json), string(writer.Body.Bytes()))
 }
