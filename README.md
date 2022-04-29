@@ -1,5 +1,10 @@
 # Golang Clean Architecture
 
+## 認証
+
+ログイン時にJWT Tokenを生成し、Cookieに付与してレスポンスを返す
+TokenからUserIDを取得できるので、そのIDをキーにMySQLを検索して、User情報を取得する
+
 ## envファイル生成 & 記述
 
 ```
@@ -22,7 +27,7 @@ docker-compose exec app go run main.go
 ```
 curl -X POST http://localhost:9000/users/create \
 -H 'Content-Type: application/json' \
--d '{"name": "tomoki", "email": "tt@gmail.com"}'
+-d '{"name": "tomoki", "email": "tt@gmail.com", "password": "Tomomki0901"}'
 ```
 
 ## Get User
