@@ -5,10 +5,10 @@ import (
 
 	"github.com/labstack/echo"
 
-	"github.com/ymktmk/golang-clean-architecture/domain"
-	"github.com/ymktmk/golang-clean-architecture/interfaces/database"
+	"github.com/ymktmk/golang-clean-architecture/app/domain"
+	"github.com/ymktmk/golang-clean-architecture/app/interfaces/database"
 
-	"github.com/ymktmk/golang-clean-architecture/usecase"
+	"github.com/ymktmk/golang-clean-architecture/app/usecase"
 )
 
 type UserController struct {

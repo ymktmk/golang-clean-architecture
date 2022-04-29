@@ -1,7 +1,7 @@
 package domain
 
 import (
-	"github.com/ymktmk/golang-clean-architecture/domain/gorm"
+	"github.com/ymktmk/golang-clean-architecture/app/domain/gorm"
 )
 
 type Users []User

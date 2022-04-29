@@ -14,11 +14,11 @@ import (
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/go-playground/validator.v9"
 
-	"github.com/ymktmk/golang-clean-architecture/domain"
-	"github.com/ymktmk/golang-clean-architecture/domain/gorm"
-	"github.com/ymktmk/golang-clean-architecture/infrastructure"
-	"github.com/ymktmk/golang-clean-architecture/interfaces/controllers"
-	"github.com/ymktmk/golang-clean-architecture/utils"
+	"github.com/ymktmk/golang-clean-architecture/app/domain"
+	"github.com/ymktmk/golang-clean-architecture/app/domain/gorm"
+	"github.com/ymktmk/golang-clean-architecture/app/infrastructure"
+	"github.com/ymktmk/golang-clean-architecture/app/interfaces/controllers"
+	"github.com/ymktmk/golang-clean-architecture/app/utils"
 )
 
 func TestCreate(t *testing.T) {

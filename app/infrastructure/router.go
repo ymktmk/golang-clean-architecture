@@ -4,7 +4,7 @@ import (
 	"github.com/labstack/echo"
 	"gopkg.in/go-playground/validator.v9"
 
-	"github.com/ymktmk/golang-clean-architecture/interfaces/controllers"
+	"github.com/ymktmk/golang-clean-architecture/app/interfaces/controllers"
 )
 
 func NewRouter() *echo.Echo {

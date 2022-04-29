@@ -9,7 +9,7 @@ import (
 	"github.com/jinzhu/gorm"
 	"github.com/joho/godotenv"
 
-	"github.com/ymktmk/golang-clean-architecture/domain"
+	"github.com/ymktmk/golang-clean-architecture/app/domain"
 )
 
 func main() {

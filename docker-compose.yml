@@ -24,7 +24,7 @@ services:
         ports:
             - "9000:9000"
         volumes:
-            - .:/go/src/work
+            - ./app:/go/src/work/app
         depends_on:
             - db
 volumes:

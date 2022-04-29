@@ -7,7 +7,7 @@ import (
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 
-	"github.com/ymktmk/golang-clean-architecture/interfaces/database"
+	"github.com/ymktmk/golang-clean-architecture/app/interfaces/database"
 )
 
 type SqlHandler struct {

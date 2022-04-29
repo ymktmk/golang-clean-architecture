@@ -1,6 +1,6 @@
 package domain
 
-import "github.com/ymktmk/golang-clean-architecture/domain/gorm"
+import "github.com/ymktmk/golang-clean-architecture/app/domain/gorm"
 
 type Todo struct {
 	gorm.Model

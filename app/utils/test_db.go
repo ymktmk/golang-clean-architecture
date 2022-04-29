@@ -7,8 +7,8 @@ import (
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 
-	"github.com/ymktmk/golang-clean-architecture/infrastructure"
-	"github.com/ymktmk/golang-clean-architecture/interfaces/database"
+	"github.com/ymktmk/golang-clean-architecture/app/infrastructure"
+	"github.com/ymktmk/golang-clean-architecture/app/interfaces/database"
 )
 
 func NewDbMock() (*gorm.DB, sqlmock.Sqlmock, error) {

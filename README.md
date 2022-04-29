@@ -1,7 +1,4 @@
-# Golang Clean Arc
-
-自前で認証・認可サーバーを作成する
-パスワードをハッシュ化する
+# Golang Clean Architecture
 
 ## envファイル生成 & 記述
 
@@ -19,6 +16,8 @@ docker exec -it todo go run migrate/migrate.go
 docker-compose exec app go run main.go
 ```
 
+# エンドポイント
+
 ## Create User
 ```
 curl -X POST http://localhost:9000/users/create \
@@ -34,5 +33,5 @@ curl http://localhost:9000/user
 
 ## テスト
 
-mockではmock.ExpectExec("UPDATE products").WillReturnResult(sqlmock.NewResult(1, 1))
-「こういうSQLが来た時はこういう結果を返す」という指定ができる
+sqlmockを使っており「こういうSQLが来た時はこういう結果を返す」という指定ができる。
+テスト用のDBを用意しなくても良いというメリットがある。

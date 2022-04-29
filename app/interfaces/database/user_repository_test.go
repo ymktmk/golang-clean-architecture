@@ -8,9 +8,9 @@ import (
 
 	"github.com/DATA-DOG/go-sqlmock"
 
-	"github.com/ymktmk/golang-clean-architecture/domain"
-	"github.com/ymktmk/golang-clean-architecture/interfaces/database"
-	"github.com/ymktmk/golang-clean-architecture/utils"
+	"github.com/ymktmk/golang-clean-architecture/app/domain"
+	"github.com/ymktmk/golang-clean-architecture/app/interfaces/database"
+	"github.com/ymktmk/golang-clean-architecture/app/utils"
 )
 
 func TestStore(t *testing.T) {
