@@ -11,29 +11,34 @@ type Claims struct {
 
 func verifyToken(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		// cookie, _ := c.Cookie("jwt")
 
-		// token, err := jwt.ParseWithClaims(cookie, &Claims{}, func(token *jwt.Token) (interface{}, error) {
-		// 	return []byte("secret"), nil
-		// })
+		cookie, _ := c.Cookie("jwt")
+		
+		tokenString := cookie.Value
 
-		// if err != nil || !token.Valid {
-		// 	return err
-		// }
+		token, err := jwt.ParseWithClaims(tokenString, &Claims{}, func(token *jwt.Token) (interface{}, error) {
+			return []byte("secret"), nil
+		})
 
-		// claims := token.Claims.(*Claims)
-		// id := claims.Issuer
+		if err != nil || !token.Valid {
+			return err
+		}
+
+		claims := token.Claims.(*Claims)
+		id := claims.Issuer
+
+		c.Set("id", id)
 
 		// var user domain.User
 		// db := NewSqlHandler()
 		// if err = db.Where("id = ?", id).First(&user).Error; err != nil {
 		// 	return err
 		// }
+		
 		// c.Set("user", &user)
-
-		// if err := next(c); err != nil {
-		// 	c.Error(err)
-		// }
+		if err := next(c); err != nil {
+			c.Error(err)
+		}
 		return nil
 	}
 }

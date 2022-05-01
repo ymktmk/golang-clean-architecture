@@ -13,10 +13,12 @@ func NewRouter() *echo.Echo {
 	e := echo.New()
 	e.Validator = &CustomValidator{Validator: validator.New()}
 	// routing
-	e.POST("/register", userController.Register)
+	e.POST("/api/register", userController.Register)
 	// e.POST("/login", userController.Login)
 	// e.POST("/logout", userController.Logout)
-	e.GET("/user", userController.Show)
+
+	g := e.Group("/api", verifyToken)
+	g.GET("/user", userController.Show)
 
 	e.POST("/todo", todoController.Create)
 	return e

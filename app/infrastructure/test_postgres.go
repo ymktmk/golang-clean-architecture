@@ -1,4 +1,4 @@
-package utils
+package infrastructure
 
 import (
 	"log"
@@ -7,7 +7,6 @@ import (
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 
-	"github.com/ymktmk/golang-clean-architecture/app/infrastructure"
 	"github.com/ymktmk/golang-clean-architecture/app/interfaces/database"
 )
 
@@ -23,7 +22,7 @@ func NewDbMock() (*gorm.DB, sqlmock.Sqlmock, error) {
 }
 
 func SqlMockHandler(conn *gorm.DB) database.SqlHandler {
-	sqlHandler := new(infrastructure.SqlHandler)
+	sqlHandler := new(SqlHandler)
 	sqlHandler.Conn = conn
 	return sqlHandler
 }

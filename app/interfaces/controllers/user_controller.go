@@ -2,6 +2,8 @@ package controllers
 
 import (
 	"net/http"
+	"strconv"
+	"time"
 
 	"github.com/labstack/echo"
 	"golang.org/x/crypto/bcrypt"
@@ -9,6 +11,7 @@ import (
 	"github.com/ymktmk/golang-clean-architecture/app/domain"
 	"github.com/ymktmk/golang-clean-architecture/app/interfaces/database"
 	"github.com/ymktmk/golang-clean-architecture/app/usecase"
+	"github.com/ymktmk/golang-clean-architecture/app/utils"
 )
 
 type UserController struct {
@@ -25,6 +28,7 @@ func NewUserController(sqlHandler database.SqlHandler) *UserController {
 	}
 }
 
+// サインアップ
 func (controller *UserController) Register(c echo.Context) (err error) {
 	ucr := new(domain.UserCreateRequest)
 	if err = c.Bind(ucr); err != nil {
@@ -52,23 +56,25 @@ func (controller *UserController) Register(c echo.Context) (err error) {
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
-
-	// // jwt tokenの検証
-	// token := utils.CreateToken(int(user.ID))
-	// // Cookie
-	// cookie := http.Cookie{
-	// 	Name:     "jwt",
-	// 	Value:    token,
-	// 	Expires:  time.Now().Add(time.Hour * 24),
-	// 	HttpOnly: true,
-	// }
-	// c.SetCookie(&cookie)
-
+	// jwt tokenの検証
+	token := utils.CreateToken(int(user.ID))
+	// Cookie
+	cookie := http.Cookie{
+		Name:     "jwt",
+		Value:    token,
+		Expires:  time.Now().Add(time.Hour * 24),
+		Path: "/",
+		HttpOnly: true,
+	}
+	c.SetCookie(&cookie)
 	return c.JSON(http.StatusOK, user)
 }
 
+// ユーザー情報
 func (controller *UserController) Show(c echo.Context) (err error) {
-	user, err := controller.Interactor.UserById(1)
+	id_string := c.Get("id").(string)
+	id, _ := strconv.Atoi(id_string)
+	user, err := controller.Interactor.UserById(id)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}

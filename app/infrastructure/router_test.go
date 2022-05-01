@@ -17,11 +17,10 @@ import (
 	"github.com/ymktmk/golang-clean-architecture/app/domain"
 	"github.com/ymktmk/golang-clean-architecture/app/infrastructure"
 	"github.com/ymktmk/golang-clean-architecture/app/interfaces/controllers"
-	"github.com/ymktmk/golang-clean-architecture/app/utils"
 )
 
 func TestCreate(t *testing.T) {
-	mockDB, mock, err := utils.NewDbMock()
+	mockDB, mock, err := infrastructure.NewDbMock()
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -40,7 +39,7 @@ func TestCreate(t *testing.T) {
 	mock.ExpectCommit()
 
 	// server
-	userController := controllers.NewUserController(utils.SqlMockHandler(mockDB))
+	userController := controllers.NewUserController(infrastructure.SqlMockHandler(mockDB))
 	e := echo.New()
 	e.Validator = &infrastructure.CustomValidator{Validator: validator.New()}
 	e.POST("/register", userController.Register)
