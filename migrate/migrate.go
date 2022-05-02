@@ -26,11 +26,11 @@ func main() {
 	// logger
 	db.Logger = db.Logger.LogMode(logger.Info)
 	// drop & migration
-	db.Migrator().DropTable(
+	err = db.Migrator().DropTable(
 		&domain.User{},
 		&domain.Todo{},
 	)
-	db.Migrator().CreateTable(
+	err = db.Migrator().CreateTable(
 		domain.User{},
 		&domain.Todo{},
 	)

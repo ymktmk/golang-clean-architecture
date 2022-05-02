@@ -62,6 +62,9 @@ func TestCreate(t *testing.T) {
 	}
 
 	cookie, err := request.Cookie("jwt")
+	if err != nil {
+		return
+	}
 	fmt.Println(cookie)
 	fmt.Println(user)
 }
