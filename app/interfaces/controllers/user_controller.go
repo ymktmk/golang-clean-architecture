@@ -56,7 +56,7 @@ func (controller *UserController) Register(c echo.Context) (err error) {
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
-	// jwt tokenの検証
+	// jwt tokenの作成
 	token := utils.CreateToken(int(user.ID))
 	// Cookie
 	cookie := http.Cookie{
@@ -68,6 +68,34 @@ func (controller *UserController) Register(c echo.Context) (err error) {
 	}
 	c.SetCookie(&cookie)
 	return c.JSON(http.StatusOK, user)
+}
+
+// ログイン
+func (controller *UserController) Login(c echo.Context) (err error) {
+	ulr := new(domain.UserLoginRequest)
+	if err = c.Bind(ulr); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+	if err = c.Validate(ulr); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+	user, err := controller.Interactor.UserByEmail(ulr.Email)
+	// パスワード検証
+	if err := bcrypt.CompareHashAndPassword(user.Password, []byte(ulr.Password)); err != nil {
+		return err
+	}
+	// jwt tokenの作成
+	token := utils.CreateToken(int(user.ID))
+	// Cookie
+	cookie := http.Cookie{
+		Name:     "jwt",
+		Value:    token,
+		Expires:  time.Now().Add(time.Hour * 24),
+		Path: "/",
+		HttpOnly: true,
+	}
+	c.SetCookie(&cookie)
+	return c.String(http.StatusOK, "success login !") 
 }
 
 // ログアウト

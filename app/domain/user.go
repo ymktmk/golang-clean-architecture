@@ -14,6 +14,7 @@ type User struct {
 	// Todos  []Todo `gorm:"foreignKey:UserID" json:"todos,omitempty"`
 }
 
+// ユーザー作成
 type UserCreateRequest struct {
 	UserName string `json:"name" validate:"required"`
 	Email    string `json:"email" validate:"required,email"`
@@ -24,5 +25,10 @@ type UserCreateResponse struct {
 	gorm.Model
 	UserName string `json:"name" validate:"required"`
 	Email    string `json:"email" validate:"required,email"`
-	Token    string `json:"token"`
+}
+
+// ログイン
+type UserLoginRequest struct {
+	Email    string `json:"email" validate:"required,email"`
+	Password string `json:"password" validate:"min=8,max=100"`
 }
