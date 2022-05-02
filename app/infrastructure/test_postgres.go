@@ -6,6 +6,7 @@ import (
 	"github.com/DATA-DOG/go-sqlmock"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 
 	"github.com/ymktmk/golang-clean-architecture/app/interfaces/database"
 )
@@ -18,6 +19,7 @@ func NewDbMock() (*gorm.DB, sqlmock.Sqlmock, error) {
 	mockDB, err := gorm.Open(postgres.New(postgres.Config{
 		Conn: sqlDB,
 	}), &gorm.Config{})
+	mockDB.Logger = mockDB.Logger.LogMode(logger.Info)
 	return mockDB, mock, err
 }
 

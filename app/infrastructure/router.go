@@ -2,6 +2,7 @@ package infrastructure
 
 import (
 	"github.com/labstack/echo"
+
 	"github.com/ymktmk/golang-clean-architecture/app/interfaces/controllers"
 
 	"gopkg.in/go-playground/validator.v9"
@@ -17,7 +18,7 @@ func NewRouter() *echo.Echo {
 	e.GET("/api/logout", userController.Logout)
 	g := e.Group("/api", verifyToken)
 	g.GET("/user", userController.Show)
-	
+
 	e.POST("/todo", todoController.Create)
 
 	return e

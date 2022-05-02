@@ -63,7 +63,7 @@ func (controller *UserController) Register(c echo.Context) (err error) {
 		Name:     "jwt",
 		Value:    token,
 		Expires:  time.Now().Add(time.Hour * 24),
-		Path: "/",
+		Path:     "/",
 		HttpOnly: true,
 	}
 	c.SetCookie(&cookie)
@@ -80,7 +80,7 @@ func (controller *UserController) Login(c echo.Context) (err error) {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 	user, err := controller.Interactor.UserByEmail(ulr.Email)
-	if  err != nil {
+	if err != nil {
 		return err
 	}
 	// パスワード検証
@@ -93,12 +93,12 @@ func (controller *UserController) Login(c echo.Context) (err error) {
 	cookie := http.Cookie{
 		Name:     "jwt",
 		Value:    token,
-		Path: "/",
+		Path:     "/",
 		Expires:  time.Now().Add(time.Hour * 24),
 		HttpOnly: true,
 	}
 	c.SetCookie(&cookie)
-	return c.String(http.StatusOK, "success login !") 
+	return c.String(http.StatusOK, "success login !")
 }
 
 // ログアウト
@@ -106,12 +106,12 @@ func (controller *UserController) Logout(c echo.Context) (err error) {
 	cookie := http.Cookie{
 		Name:     "jwt",
 		Value:    "",
-		Path: "/",
+		Path:     "/",
 		Expires:  time.Now().Add(-time.Hour),
 		HttpOnly: true,
 	}
 	c.SetCookie(&cookie)
-	return c.String(http.StatusOK, "success logout !") 
+	return c.String(http.StatusOK, "success logout !")
 }
 
 // ユーザー情報

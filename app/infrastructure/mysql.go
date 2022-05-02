@@ -6,6 +6,7 @@ import (
 	"github.com/joho/godotenv"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 
 	"github.com/ymktmk/golang-clean-architecture/app/interfaces/database"
 )
@@ -24,6 +25,7 @@ func NewSqlHandler() database.SqlHandler {
 	if err != nil {
 		panic(err.Error)
 	}
+	conn.Logger = conn.Logger.LogMode(logger.Info)
 	sqlHandler := new(SqlHandler)
 	sqlHandler.Conn = conn
 	return sqlHandler

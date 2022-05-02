@@ -24,7 +24,7 @@ func TestCreate(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-
+	
 	// mock設定
 	rows := sqlmock.NewRows([]string{"id", "name", "email", "password", "created_at", "updated_at", "deleted_at"})
 	mock.ExpectQuery(regexp.QuoteMeta(

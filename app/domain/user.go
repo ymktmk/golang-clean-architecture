@@ -11,7 +11,7 @@ type User struct {
 	Name     string `gorm:"size:255;not null" json:"name,omitempty" validate:"required"`
 	Email    string `gorm:"size:255;not null;unique" json:"email,omitempty" validate:"required,email"`
 	Password []byte `gorm:"size:255;not null" json:"password,omitempty" validate:"min=8,max=100"`
-	// Todos  []Todo `gorm:"foreignKey:UserID" json:"todos,omitempty"`
+	Todos    []Todo `gorm:"foreignKey:UserID" json:"todos,omitempty"`
 }
 
 // ユーザー作成
