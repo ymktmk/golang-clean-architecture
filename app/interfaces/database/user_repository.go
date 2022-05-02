@@ -16,8 +16,8 @@ func (repo *UserRepository) Store(u *domain.User) (user *domain.User, err error)
 	return
 }
 
-func (repo *UserRepository) Update(uid string, u *domain.User) (user *domain.User, err error) {
-	if err = repo.Model(&user).Where("uid = ?", uid).Update("name", u.Name).Error; err != nil {
+func (repo *UserRepository) Update(id int, u *domain.User) (user *domain.User, err error) {
+	if err = repo.Model(&user).Where("id = ?", id).Update("name", u.Name).Error; err != nil {
 		return
 	}
 	user = u

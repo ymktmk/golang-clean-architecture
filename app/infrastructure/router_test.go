@@ -19,7 +19,7 @@ import (
 	"github.com/ymktmk/golang-clean-architecture/app/interfaces/controllers"
 )
 
-func TestCreate(t *testing.T) {
+func TestAPIRegister(t *testing.T) {
 	mockDB, mock, err := infrastructure.NewDbMock()
 	if err != nil {
 		t.Fatal(err)
@@ -67,4 +67,8 @@ func TestCreate(t *testing.T) {
 	}
 	fmt.Println(cookie)
 	fmt.Println(user)
+}
+
+func TestAPITodoCreate(t *testing.T) {
+	
 }

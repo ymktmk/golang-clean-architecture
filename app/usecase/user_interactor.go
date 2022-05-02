@@ -6,7 +6,7 @@ import (
 
 type UserRepository interface {
 	Store(u *domain.User) (user *domain.User, err error)
-	Update(uid string, u *domain.User) (user *domain.User, err error)
+	Update(id int, u *domain.User) (user *domain.User, err error)
 	FindByEmail(email string) (user *domain.User, err error)
 	FindUsersByEmail(email string) (users domain.Users, err error)
 	FindById(userId int) (user *domain.User, err error)
@@ -17,8 +17,13 @@ type UserInteractor struct {
 	UserRepository UserRepository
 }
 
-func (interactor *UserInteractor) Add(u *domain.User) (user *domain.User, err error) {
+func (interactor *UserInteractor) Create(u *domain.User) (user *domain.User, err error) {
 	user, err = interactor.UserRepository.Store(u)
+	return
+}
+
+func (interactor *UserInteractor) Update(id int, u *domain.User) (user *domain.User, err error) {
+	user, err = interactor.UserRepository.Update(id, u)
 	return
 }
 

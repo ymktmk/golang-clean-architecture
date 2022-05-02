@@ -32,3 +32,8 @@ type UserLoginRequest struct {
 	Email    string `json:"email" validate:"required,email"`
 	Password string `json:"password" validate:"min=8,max=100"`
 }
+
+// ユーザー更新
+type UserUpdateRequest struct {
+	UserName string `json:"name" validate:"required"`
+}

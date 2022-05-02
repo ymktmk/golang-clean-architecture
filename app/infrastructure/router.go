@@ -13,13 +13,19 @@ func NewRouter() *echo.Echo {
 	todoController := controllers.NewTodoController(NewSqlHandler())
 	e := echo.New()
 	e.Validator = &CustomValidator{Validator: validator.New()}
+	// register & login & logout
 	e.POST("/api/register", userController.Register)
 	e.POST("/api/login", userController.Login)
 	e.GET("/api/logout", userController.Logout)
+	// middleware
 	g := e.Group("/api", verifyToken)
+	// user
 	g.GET("/user", userController.Show)
-
-	e.POST("/todo", todoController.Create)
-
+	g.POST("/user", userController.Update)
+	// todos
+	g.POST("/todos", todoController.Create)
+	g.GET("/todos", todoController.All)
+	g.GET("/todos/:id", todoController.Show)
+	g.POST("/todos/:id", todoController.Update)
 	return e
 }

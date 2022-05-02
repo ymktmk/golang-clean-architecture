@@ -52,7 +52,7 @@ func (controller *UserController) Register(c echo.Context) (err error) {
 		Password: password,
 	}
 	// 同じメールアドレス、uidでerr返ってくる → 同じものを挿入したときidは進む
-	user, err := controller.Interactor.Add(u)
+	user, err := controller.Interactor.Create(u)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
@@ -119,6 +119,27 @@ func (controller *UserController) Show(c echo.Context) (err error) {
 	id_string := c.Get("id").(string)
 	id, _ := strconv.Atoi(id_string)
 	user, err := controller.Interactor.UserById(id)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+	return c.JSON(http.StatusOK, user)
+}
+
+// ユーザー情報更新
+func (controller *UserController) Update(c echo.Context) (err error) {
+	uur := new(domain.UserUpdateRequest)
+	if err = c.Bind(uur); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+	if err = c.Validate(uur); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+
+	id_string := c.Get("id").(string)
+	id, _ := strconv.Atoi(id_string)
+	
+	u := &domain.User{Name: uur.UserName}
+	user, err := controller.Interactor.Update(id, u)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
