@@ -80,6 +80,9 @@ func (controller *UserController) Login(c echo.Context) (err error) {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 	user, err := controller.Interactor.UserByEmail(ulr.Email)
+	if  err != nil {
+		return err
+	}
 	// パスワード検証
 	if err := bcrypt.CompareHashAndPassword(user.Password, []byte(ulr.Password)); err != nil {
 		return err
@@ -90,8 +93,8 @@ func (controller *UserController) Login(c echo.Context) (err error) {
 	cookie := http.Cookie{
 		Name:     "jwt",
 		Value:    token,
-		Expires:  time.Now().Add(time.Hour * 24),
 		Path: "/",
+		Expires:  time.Now().Add(time.Hour * 24),
 		HttpOnly: true,
 	}
 	c.SetCookie(&cookie)
@@ -103,11 +106,12 @@ func (controller *UserController) Logout(c echo.Context) (err error) {
 	cookie := http.Cookie{
 		Name:     "jwt",
 		Value:    "",
+		Path: "/",
 		Expires:  time.Now().Add(-time.Hour),
 		HttpOnly: true,
 	}
 	c.SetCookie(&cookie)
-	return 
+	return c.String(http.StatusOK, "success logout !") 
 }
 
 // ユーザー情報

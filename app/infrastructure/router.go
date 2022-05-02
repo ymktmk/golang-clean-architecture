@@ -17,6 +17,8 @@ func NewRouter() *echo.Echo {
 	e.GET("/api/logout", userController.Logout)
 	g := e.Group("/api", verifyToken)
 	g.GET("/user", userController.Show)
+	
 	e.POST("/todo", todoController.Create)
+
 	return e
 }
