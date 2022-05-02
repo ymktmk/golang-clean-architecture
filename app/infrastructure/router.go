@@ -21,11 +21,11 @@ func NewRouter() *echo.Echo {
 	g := e.Group("/api", verifyToken)
 	// user
 	g.GET("/user", userController.Show)
-	g.POST("/user", userController.Update)
+	g.PATCH("/user", userController.Update)
 	// todos
 	g.POST("/todos", todoController.Create)
 	g.GET("/todos", todoController.All)
 	g.GET("/todos/:id", todoController.Show)
-	g.POST("/todos/:id", todoController.Update)
+	g.PATCH("/todos/:id", todoController.Update)
 	return e
 }

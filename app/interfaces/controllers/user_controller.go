@@ -116,8 +116,8 @@ func (controller *UserController) Logout(c echo.Context) (err error) {
 
 // ユーザー情報
 func (controller *UserController) Show(c echo.Context) (err error) {
-	id_string := c.Get("id").(string)
-	id, _ := strconv.Atoi(id_string)
+	idString := c.Get("id").(string)
+	id, _ := strconv.Atoi(idString)
 	user, err := controller.Interactor.UserById(id)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
@@ -135,8 +135,8 @@ func (controller *UserController) Update(c echo.Context) (err error) {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
-	id_string := c.Get("id").(string)
-	id, _ := strconv.Atoi(id_string)
+	idString := c.Get("id").(string)
+	id, _ := strconv.Atoi(idString)
 	
 	u := &domain.User{Name: uur.UserName}
 	user, err := controller.Interactor.Update(id, u)

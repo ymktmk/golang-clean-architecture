@@ -56,11 +56,23 @@ func (controller *TodoController) Update(c echo.Context) (err error) {
 	if err = c.Validate(tcr); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
-	idString := c.Param("id")
-	id, _ := strconv.Atoi(idString)
-	// DTO
+	// todoのidを取得する
+	todoIdString := c.Param("id")
+	todoId, _ := strconv.Atoi(todoIdString)
+	// userのidを取得する
+	userIdString := c.Get("id").(string)
+	userId, _ := strconv.Atoi(userIdString)
+	// todoIdからtodoを取得する 
+	td, err := controller.Interactor.TodoById(todoId)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+	// userIDが一致するかどうか
+	if userId != td.UserID {
+		return echo.NewHTTPError(http.StatusBadRequest, "不当なユーザーのリクエストです")
+	}
 	t := &domain.Todo{Name: tcr.Name}
-	todo, err := controller.Interactor.Update(id,t)
+	todo, err := controller.Interactor.Update(todoId, t)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
