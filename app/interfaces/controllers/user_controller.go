@@ -70,6 +70,18 @@ func (controller *UserController) Register(c echo.Context) (err error) {
 	return c.JSON(http.StatusOK, user)
 }
 
+// ログアウト
+func (controller *UserController) Logout(c echo.Context) (err error) {
+	cookie := http.Cookie{
+		Name:     "jwt",
+		Value:    "",
+		Expires:  time.Now().Add(-time.Hour),
+		HttpOnly: true,
+	}
+	c.SetCookie(&cookie)
+	return 
+}
+
 // ユーザー情報
 func (controller *UserController) Show(c echo.Context) (err error) {
 	id_string := c.Get("id").(string)

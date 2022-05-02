@@ -12,11 +12,8 @@ func NewRouter() *echo.Echo {
 	todoController := controllers.NewTodoController(NewSqlHandler())
 	e := echo.New()
 	e.Validator = &CustomValidator{Validator: validator.New()}
-	// routing
 	e.POST("/api/register", userController.Register)
-	// e.POST("/login", userController.Login)
-	// e.POST("/logout", userController.Logout)
-
+	e.GET("/api/logout", userController.Logout)
 	g := e.Group("/api", verifyToken)
 	g.GET("/user", userController.Show)
 
