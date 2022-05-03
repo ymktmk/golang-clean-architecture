@@ -98,6 +98,7 @@ func (controller *UserController) Login(c echo.Context) (err error) {
 		HttpOnly: true,
 	}
 	c.SetCookie(&cookie)
+	c.Set("userId", user.ID)
 	return c.String(http.StatusOK, "success login !")
 }
 
@@ -116,8 +117,7 @@ func (controller *UserController) Logout(c echo.Context) (err error) {
 
 // ユーザー情報
 func (controller *UserController) Show(c echo.Context) (err error) {
-	idString := c.Get("id").(string)
-	id, _ := strconv.Atoi(idString)
+	id, _ := strconv.Atoi(c.Get("id").(string))
 	user, err := controller.Interactor.UserById(id)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
@@ -135,8 +135,7 @@ func (controller *UserController) Update(c echo.Context) (err error) {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
-	idString := c.Get("id").(string)
-	id, _ := strconv.Atoi(idString)
+	id, _ := strconv.Atoi(c.Get("id").(string))
 	
 	u := &domain.User{Name: uur.UserName}
 	user, err := controller.Interactor.Update(id, u)

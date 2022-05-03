@@ -1,5 +1,7 @@
 # Golang Clean Architecture
 
+https://qiita.com/x-color/items/24ff2491751f55e866cf
+
 ## 認証
 
 ログイン時にJWT Tokenを生成し、Cookieに付与してレスポンスを返す

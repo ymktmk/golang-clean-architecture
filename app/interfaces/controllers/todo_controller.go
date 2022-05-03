@@ -34,8 +34,7 @@ func (controller *TodoController) Create(c echo.Context) (err error) {
 	if err = c.Validate(tcr); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
-	userIdString := c.Get("id").(string)
-	userId, _ := strconv.Atoi(userIdString)
+	userId, _ := strconv.Atoi(c.Get("id").(string))
 	// DTO
 	t := &domain.Todo{
 		Name: tcr.Name,
@@ -57,11 +56,9 @@ func (controller *TodoController) Update(c echo.Context) (err error) {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 	// todoのidを取得する
-	todoIdString := c.Param("id")
-	todoId, _ := strconv.Atoi(todoIdString)
+	todoId, _ := strconv.Atoi(c.Param("id"))
 	// userのidを取得する
-	userIdString := c.Get("id").(string)
-	userId, _ := strconv.Atoi(userIdString)
+	userId, _ := strconv.Atoi(c.Get("id").(string))
 	// todoIdからtodoを取得する 
 	td, err := controller.Interactor.TodoById(todoId)
 	if err != nil {
@@ -81,8 +78,7 @@ func (controller *TodoController) Update(c echo.Context) (err error) {
 
 // 1つのtodo取得
 func (controller *TodoController) Show(c echo.Context) (err error) {
-	idString := c.Param("id")
-	id, _ := strconv.Atoi(idString)
+	id, _ := strconv.Atoi(c.Param("id"))
 	todo, err := controller.Interactor.TodoById(id)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
@@ -92,8 +88,7 @@ func (controller *TodoController) Show(c echo.Context) (err error) {
 
 // 全てのtodo取得
 func (controller *TodoController) All(c echo.Context) (err error) {
-	userIdString := c.Get("id").(string)
-	userId, _ := strconv.Atoi(userIdString)
+	userId, _ := strconv.Atoi(c.Get("id").(string))
 	todos, err := controller.Interactor.TodosById(userId)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())

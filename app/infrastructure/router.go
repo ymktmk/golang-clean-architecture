@@ -14,8 +14,8 @@ func NewRouter() *echo.Echo {
 	e := echo.New()
 	e.Validator = &CustomValidator{Validator: validator.New()}
 	// register & login & logout
-	e.POST("/api/register", userController.Register)
-	e.POST("/api/login", userController.Login)
+	e.POST("/api/register", userController.Register, issueCookie)
+	e.POST("/api/login", userController.Login, issueCookie)
 	e.GET("/api/logout", userController.Logout)
 	// middleware
 	g := e.Group("/api", verifyToken)
