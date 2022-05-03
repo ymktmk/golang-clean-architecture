@@ -55,9 +55,8 @@ func (controller *TodoController) Update(c echo.Context) (err error) {
 	if err = c.Validate(tcr); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
-	// todoのidを取得する
+
 	todoId, _ := strconv.Atoi(c.Param("id"))
-	// userのidを取得する
 	userId, _ := strconv.Atoi(c.Get("id").(string))
 	// todoIdからtodoを取得する 
 	td, err := controller.Interactor.TodoById(todoId)

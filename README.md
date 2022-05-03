@@ -38,6 +38,15 @@ curl -X POST http://localhost:9000/users/create \
 curl http://localhost:9000/user
 ```
 
+## Todo Create
+
+```
+curl -X POST http://localhost:9000/api/todos \
+-H 'Content-Type: application/json' \
+-b 'jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NTE2NjkyODUsImp0aSI6IjEiLCJpc3MiOiIxIn0.mC7chSF4aTNluOwR_bEWCxSFpEK40A8PunaDoOCxYXE' \
+-d '{"name": "AWSの勉強"}'
+```
+
 ## テスト
 
 sqlmockを使っており「こういうSQLが来た時はこういう結果を返す」という指定ができる。

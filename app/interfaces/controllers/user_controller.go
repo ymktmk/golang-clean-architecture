@@ -98,7 +98,7 @@ func (controller *UserController) Login(c echo.Context) (err error) {
 		HttpOnly: true,
 	}
 	c.SetCookie(&cookie)
-	c.Set("userId", user.ID)
+	// c.Set("userId", user.ID)
 	return c.String(http.StatusOK, "success login !")
 }
 

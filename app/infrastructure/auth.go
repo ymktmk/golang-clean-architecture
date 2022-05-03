@@ -34,7 +34,7 @@ func issueCookie(next echo.HandlerFunc) echo.HandlerFunc {
 	}
 }
 
-func verifyToken(next echo.HandlerFunc) echo.HandlerFunc {
+func VerifyToken(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		cookie, _ := c.Cookie("jwt")
 		tokenString := cookie.Value

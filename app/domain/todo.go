@@ -12,5 +12,5 @@ type Todo struct {
 
 // todo作成
 type TodoCreateRequest struct {
-	Name string `json:"name" validate:"required"`
+	Name string `json:"name" validate:"min=1,max=100"`
 }
