@@ -8,13 +8,16 @@ import (
 	"regexp"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/labstack/echo"
 	"github.com/stretchr/testify/assert"
+	"golang.org/x/crypto/bcrypt"
 	"gopkg.in/go-playground/validator.v9"
 
 	"github.com/ymktmk/golang-clean-architecture/app/domain"
+	"github.com/ymktmk/golang-clean-architecture/app/domain/gorm"
 	"github.com/ymktmk/golang-clean-architecture/app/infrastructure"
 	"github.com/ymktmk/golang-clean-architecture/app/interfaces/controllers"
 )
@@ -26,7 +29,7 @@ var (
 	e = echo.New()
 )
 
-func TestAPIRegister(t *testing.T) {
+func TestRegister(t *testing.T) {
 	// mock設定
 	rows := sqlmock.NewRows([]string{"id", "name", "email", "password", "created_at", "updated_at", "deleted_at"})
 	mock.ExpectQuery(regexp.QuoteMeta(
@@ -63,8 +66,49 @@ func TestAPIRegister(t *testing.T) {
 	}
 }
 
+func TestUserShow(t *testing.T) {
+	password, _ := bcrypt.GenerateFromPassword([]byte("Tomoki0901"), 10)
+	user := &domain.User{
+		Model: gorm.Model{
+			ID:        1,
+			CreatedAt: time.Now(),
+			UpdatedAt: time.Now(),
+			DeletedAt: nil,
+		},
+		Name:     "tomoki",
+		Email:    "example@gmail.com",
+		Password: password,
+	}
+	// mock設定
+	rows := sqlmock.NewRows([]string{"id", "name", "email", "password", "created_at", "updated_at", "deleted_at"}).
+	AddRow(1, user.Name, user.Email, user.Password, user.CreatedAt, user.UpdatedAt, user.DeletedAt)
+	mock.ExpectQuery(regexp.QuoteMeta(
+		`SELECT * FROM "users" WHERE id = $1`)).
+		WithArgs(user.ID).
+		WillReturnRows(rows)
+	mock.ExpectBegin()
 
-func TestAPITodoCreate(t *testing.T) {
+	e.Validator = &infrastructure.CustomValidator{Validator: validator.New()}
+	
+	// client
+	writer := httptest.NewRecorder()
+	request, _ := http.NewRequest("GET", "/user", nil)
+	request.Header.Set("Content-Type", "application/json")
+	c := e.NewContext(request, writer)
+	c.Set("id", "1")
+
+	if assert.NoError(t, userController.Show(c)) {
+		var user domain.User
+		if err := json.Unmarshal(writer.Body.Bytes(), &user); err != nil {
+			t.Error(err)
+		}
+		fmt.Print(user)
+	}
+
+}
+
+
+func TestTodoCreate(t *testing.T) {
 	mock.ExpectBegin()
 	mock.ExpectQuery(regexp.QuoteMeta(
 		`INSERT INTO "todos" ("created_at","updated_at","deleted_at","name","user_id") VALUES ($1,$2,$3,$4,$5)`)).
