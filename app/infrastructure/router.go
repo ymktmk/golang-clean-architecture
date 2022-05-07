@@ -15,11 +15,7 @@ func NewRouter() *echo.Echo {
 	e := echo.New()
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
-	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-		AllowOrigins: []string{"http://localhost:8080"},
-		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
-		AllowMethods: []string{echo.GET, echo.POST},
-	}))
+	e.Use(middleware.CORS())
 	e.Validator = &CustomValidator{Validator: validator.New()}
 	// register & login & logout
 	e.POST("/api/register", userController.Register, issueCookie)
