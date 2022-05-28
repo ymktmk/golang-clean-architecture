@@ -29,11 +29,11 @@ func (controller *TodoController) Create(c echo.Context) (err error) {
 	if err = c.Validate(tcr); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
-	userId, _ := strconv.Atoi(c.Get("id").(string))
+	userId, _ := strconv.ParseUint(c.Get("id").(string), 10, 32)
 	// DTO
 	inputData := input.CreateTodo{
 		Name:   tcr.Name,
-		UserID: userId,
+		UserID: uint(userId),
 	}
 	todo, err := controller.Usecase.Create(inputData)
 	if err != nil {
@@ -51,21 +51,21 @@ func (controller *TodoController) Update(c echo.Context) (err error) {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
-	todoId, _ := strconv.Atoi(c.Param("id"))
-	userId, _ := strconv.Atoi(c.Get("id").(string))
+	todoId, _ := strconv.ParseUint(c.Param("id"), 10, 32)
+	userId, _ := strconv.ParseUint(c.Get("id").(string), 10, 32)
 	// todoIdからtodoを取得する
 	td, err := controller.Usecase.GetTodo(input.GetTodo{
-		TodoID: todoId,
+		TodoID: uint(todoId),
 	})
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 	// userIDが一致するかどうか
-	if userId != td.UserID {
+	if uint(userId) != td.UserID {
 		return echo.NewHTTPError(http.StatusBadRequest, "不当なユーザーのリクエストです")
 	}
 	todo, err := controller.Usecase.Update(input.UpdateTodo{
-		ID:   todoId,
+		ID:   uint(todoId),
 		Name: tcr.Name,
 	})
 	if err != nil {
@@ -76,8 +76,8 @@ func (controller *TodoController) Update(c echo.Context) (err error) {
 
 // 1つのtodo取得
 func (controller *TodoController) Show(c echo.Context) (err error) {
-	id, _ := strconv.Atoi(c.Param("id"))
-	todo, err := controller.Usecase.GetTodo(input.GetTodo{TodoID: id})
+	todoId, _ := strconv.ParseUint(c.Param("id"), 10, 32)
+	todo, err := controller.Usecase.GetTodo(input.GetTodo{TodoID: uint(todoId)})
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
@@ -86,8 +86,8 @@ func (controller *TodoController) Show(c echo.Context) (err error) {
 
 // 全てのtodo取得
 func (controller *TodoController) All(c echo.Context) (err error) {
-	userId, _ := strconv.Atoi(c.Get("id").(string))
-	todos, err := controller.Usecase.GetAllTodos(input.GetAllTodos{UserID: userId})
+	userId, _ := strconv.ParseUint(c.Get("id").(string), 10, 32)
+	todos, err := controller.Usecase.GetAllTodos(input.GetAllTodos{UserID: uint(userId)})
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
