@@ -14,19 +14,19 @@ type TodoUsecase interface {
 type CreateTodo struct {
 	ID     uint   `json:"id"`
 	Name   string `json:"name"`
-	UserID int    `json:"user_id"`
+	UserID uint   `json:"user_id"`
 }
 
 type UpdateTodo struct {
-	ID     int    `json:"id"`
+	ID     uint   `json:"id"`
 	Name   string `json:"name"`
-	UserID string `json:"user_id"`
+	UserID uint   `json:"user_id"`
 }
 
 type GetTodo struct {
-	TodoID int `json:"todo_id"`
+	TodoID uint `json:"todo_id"`
 }
 
 type GetAllTodos struct {
-	UserID int `json:"user_id"`
+	UserID uint `json:"user_id"`
 }
