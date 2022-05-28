@@ -46,8 +46,3 @@ curl -X POST http://localhost:9000/api/todos \
 -b 'jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NTE2NjkyODUsImp0aSI6IjEiLCJpc3MiOiIxIn0.mC7chSF4aTNluOwR_bEWCxSFpEK40A8PunaDoOCxYXE' \
 -d '{"name": "AWSの勉強"}'
 ```
-
-## テスト
-
-sqlmockを使っており「こういうSQLが来た時はこういう結果を返す」という指定ができる。
-テスト用のDBを用意しなくても良いというメリットがある。
