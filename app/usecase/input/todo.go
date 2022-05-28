@@ -4,17 +4,17 @@ import (
 	"github.com/ymktmk/golang-clean-architecture/app/usecase/output"
 )
 
-type TodoUserCase interface {
-	Craete(CreateTodo) (output.CreateTodo, error)
-	Update(UpdateTodo) (output.UpdateTodo, error)
-	GetTodo(GetTodo) (output.GetTodo, error)
-	GetAllTodos(GetAllTodos) (output.GetAllTodos, error)
+type TodoUsecase interface {
+	Create(CreateTodo) (output.Todo, error)
+	Update(UpdateTodo) (output.Todo, error)
+	GetTodo(GetTodo) (output.Todo, error)
+	GetAllTodos(GetAllTodos) (output.Todo, error)
 }
 
 type CreateTodo struct {
 	ID     uint   `json:"id"`
 	Name   string `json:"name"`
-	UserID string `json:"user_id"`
+	UserID int    `json:"user_id"`
 }
 
 type UpdateTodo struct {

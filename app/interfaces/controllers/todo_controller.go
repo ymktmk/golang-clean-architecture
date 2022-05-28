@@ -5,23 +5,18 @@ import (
 	"strconv"
 
 	"github.com/ymktmk/golang-clean-architecture/app/domain"
-	"github.com/ymktmk/golang-clean-architecture/app/interfaces/database"
-	"github.com/ymktmk/golang-clean-architecture/app/usecase"
+	"github.com/ymktmk/golang-clean-architecture/app/usecase/input"
 
 	"github.com/labstack/echo"
 )
 
 type TodoController struct {
-	Interactor usecase.TodoInteractor
+	Usecase input.TodoUsecase
 }
 
-func NewTodoController(sqlHandler database.SqlHandler) *TodoController {
+func NewTodoController(usecase input.TodoUsecase) *TodoController {
 	return &TodoController{
-		Interactor: usecase.TodoInteractor{
-			TodoRepository: &database.TodoRepository{
-				SqlHandler: sqlHandler,
-			},
-		},
+		Usecase: usecase,
 	}
 }
 
@@ -36,11 +31,11 @@ func (controller *TodoController) Create(c echo.Context) (err error) {
 	}
 	userId, _ := strconv.Atoi(c.Get("id").(string))
 	// DTO
-	t := &domain.Todo{
-		Name: tcr.Name,
+	inputData := input.CreateTodo{
+		Name:   tcr.Name,
 		UserID: userId,
 	}
-	todo, err := controller.Interactor.Create(t)
+	todo, err := controller.Usecase.Create(inputData)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
@@ -58,8 +53,10 @@ func (controller *TodoController) Update(c echo.Context) (err error) {
 
 	todoId, _ := strconv.Atoi(c.Param("id"))
 	userId, _ := strconv.Atoi(c.Get("id").(string))
-	// todoIdからtodoを取得する 
-	td, err := controller.Interactor.TodoById(todoId)
+	// todoIdからtodoを取得する
+	td, err := controller.Usecase.GetTodo(input.GetTodo{
+		TodoID: todoId,
+	})
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
@@ -67,8 +64,10 @@ func (controller *TodoController) Update(c echo.Context) (err error) {
 	if userId != td.UserID {
 		return echo.NewHTTPError(http.StatusBadRequest, "不当なユーザーのリクエストです")
 	}
-	t := &domain.Todo{Name: tcr.Name}
-	todo, err := controller.Interactor.Update(todoId, t)
+	todo, err := controller.Usecase.Update(input.UpdateTodo{
+		ID:   todoId,
+		Name: tcr.Name,
+	})
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
@@ -78,7 +77,7 @@ func (controller *TodoController) Update(c echo.Context) (err error) {
 // 1つのtodo取得
 func (controller *TodoController) Show(c echo.Context) (err error) {
 	id, _ := strconv.Atoi(c.Param("id"))
-	todo, err := controller.Interactor.TodoById(id)
+	todo, err := controller.Usecase.GetTodo(input.GetTodo{TodoID: id})
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
@@ -88,7 +87,7 @@ func (controller *TodoController) Show(c echo.Context) (err error) {
 // 全てのtodo取得
 func (controller *TodoController) All(c echo.Context) (err error) {
 	userId, _ := strconv.Atoi(c.Get("id").(string))
-	todos, err := controller.Interactor.TodosById(userId)
+	todos, err := controller.Usecase.GetAllTodos(input.GetAllTodos{UserID: userId})
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}

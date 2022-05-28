@@ -1,4 +1,4 @@
-package usecase
+package interactor
 
 import "github.com/ymktmk/golang-clean-architecture/app/domain"
 
