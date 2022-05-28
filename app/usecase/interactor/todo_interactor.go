@@ -23,12 +23,12 @@ func (interactor *TodoInteractor) Update(id int, t *domain.Todo) (todo *domain.T
 	return
 }
 
-func (interactor *TodoInteractor) TodoById(id int) (todo *domain.Todo, err error) {
+func (interactor *TodoInteractor) GetTodo(id int) (todo *domain.Todo, err error) {
 	todo, err = interactor.TodoRepository.FindTodoById(id)
 	return
 }
 
-func (interactor *TodoInteractor) TodosById(userId int) (todos *domain.Todos, err error) {
+func (interactor *TodoInteractor) GetAllTodos(userId int) (todos *domain.Todos, err error) {
 	todos, err = interactor.TodoRepository.FindTodosById(userId)
 	return
 }
