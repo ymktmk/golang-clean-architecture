@@ -5,23 +5,18 @@ import (
 	"strconv"
 
 	"github.com/ymktmk/golang-clean-architecture/app/domain"
-	"github.com/ymktmk/golang-clean-architecture/app/interfaces/database"
-	"github.com/ymktmk/golang-clean-architecture/app/usecase"
+	"github.com/ymktmk/golang-clean-architecture/app/usecase/input"
 
 	"github.com/labstack/echo"
 )
 
 type TodoController struct {
-	Interactor usecase.TodoInteractor
+	Usecase input.TodoUsecase
 }
 
-func NewTodoController(sqlHandler database.SqlHandler) *TodoController {
+func NewTodoController(usecase input.TodoUsecase) *TodoController {
 	return &TodoController{
-		Interactor: usecase.TodoInteractor{
-			TodoRepository: &database.TodoRepository{
-				SqlHandler: sqlHandler,
-			},
-		},
+		Usecase: usecase,
 	}
 }
 
@@ -34,13 +29,13 @@ func (controller *TodoController) Create(c echo.Context) (err error) {
 	if err = c.Validate(tcr); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
-	userId, _ := strconv.Atoi(c.Get("id").(string))
+	userId, _ := strconv.ParseUint(c.Get("id").(string), 10, 32)
 	// DTO
-	t := &domain.Todo{
-		Name: tcr.Name,
-		UserID: userId,
+	inputData := input.CreateTodo{
+		Name:   tcr.Name,
+		UserID: uint(userId),
 	}
-	todo, err := controller.Interactor.Create(t)
+	todo, err := controller.Usecase.Create(inputData)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
@@ -56,19 +51,23 @@ func (controller *TodoController) Update(c echo.Context) (err error) {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
-	todoId, _ := strconv.Atoi(c.Param("id"))
-	userId, _ := strconv.Atoi(c.Get("id").(string))
-	// todoIdからtodoを取得する 
-	td, err := controller.Interactor.TodoById(todoId)
+	todoId, _ := strconv.ParseUint(c.Param("id"), 10, 32)
+	userId, _ := strconv.ParseUint(c.Get("id").(string), 10, 32)
+	// todoIdからtodoを取得する
+	td, err := controller.Usecase.GetTodo(input.GetTodo{
+		TodoID: uint(todoId),
+	})
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 	// userIDが一致するかどうか
-	if userId != td.UserID {
+	if uint(userId) != td.UserID {
 		return echo.NewHTTPError(http.StatusBadRequest, "不当なユーザーのリクエストです")
 	}
-	t := &domain.Todo{Name: tcr.Name}
-	todo, err := controller.Interactor.Update(todoId, t)
+	todo, err := controller.Usecase.Update(input.UpdateTodo{
+		ID:   uint(todoId),
+		Name: tcr.Name,
+	})
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
@@ -77,8 +76,8 @@ func (controller *TodoController) Update(c echo.Context) (err error) {
 
 // 1つのtodo取得
 func (controller *TodoController) Show(c echo.Context) (err error) {
-	id, _ := strconv.Atoi(c.Param("id"))
-	todo, err := controller.Interactor.TodoById(id)
+	todoId, _ := strconv.ParseUint(c.Param("id"), 10, 32)
+	todo, err := controller.Usecase.GetTodo(input.GetTodo{TodoID: uint(todoId)})
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
@@ -87,8 +86,8 @@ func (controller *TodoController) Show(c echo.Context) (err error) {
 
 // 全てのtodo取得
 func (controller *TodoController) All(c echo.Context) (err error) {
-	userId, _ := strconv.Atoi(c.Get("id").(string))
-	todos, err := controller.Interactor.TodosById(userId)
+	userId, _ := strconv.ParseUint(c.Get("id").(string), 10, 32)
+	todos, err := controller.Usecase.GetAllTodos(input.GetAllTodos{UserID: uint(userId)})
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
