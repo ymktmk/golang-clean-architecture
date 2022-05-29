@@ -20,12 +20,14 @@ import (
 	"github.com/ymktmk/golang-clean-architecture/app/domain/gorm"
 	"github.com/ymktmk/golang-clean-architecture/app/infrastructure"
 	"github.com/ymktmk/golang-clean-architecture/app/interfaces/controllers"
+	"github.com/ymktmk/golang-clean-architecture/app/interfaces/database"
+	"github.com/ymktmk/golang-clean-architecture/app/usecase/interactor"
 )
 
 var (
 	mockDB, mock, _ = infrastructure.NewDbMock()
 	userController = controllers.NewUserController(infrastructure.SqlMockHandler(mockDB))
-	todoController = controllers.NewTodoController(infrastructure.SqlMockHandler(mockDB))
+	todoController = controllers.NewTodoController(interactor.NewTodoInteractor(database.NewTodoRepository(infrastructure.SqlMockHandler(mockDB))))
 	e = echo.New()
 )
 

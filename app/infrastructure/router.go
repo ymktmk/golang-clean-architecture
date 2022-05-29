@@ -13,9 +13,7 @@ import (
 
 func NewRouter() *echo.Echo {
 	userController := controllers.NewUserController(NewSqlHandler())
-
 	todoController := controllers.NewTodoController(interactor.NewTodoInteractor(database.NewTodoRepository(NewSqlHandler())))
-
 	e := echo.New()
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
@@ -28,8 +26,8 @@ func NewRouter() *echo.Echo {
 	// middleware
 	g := e.Group("/api", VerifyToken)
 	// user
-	g.GET("/user", userController.Show)
-	g.PATCH("/user", userController.Update)
+	g.GET("/users", userController.Show)
+	g.PATCH("/users", userController.Update)
 	// todos
 	g.POST("/todos", todoController.Create)
 	g.GET("/todos", todoController.All)

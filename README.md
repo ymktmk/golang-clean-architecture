@@ -18,28 +18,26 @@ cp .env.example .env
 docker exec -it todo go run migrate/migrate.go
 ```
 
-## サーバー起動
+## Docker Build & Up (ホットリロード付き)
 ```
-docker-compose exec app go run main.go
+docker-compose up
 ```
 
 # エンドポイント
 
 ## Create User
 ```
-curl -X POST http://localhost:9000/users/create \
+curl -X POST http://localhost:9000/api/register \
 -H 'Content-Type: application/json' \
--d '{"name": "tomoki", "email": "tt@gmail.com", "password": "Tomomki0901"}'
+-d '{"name": "tomoki", "email": "tomoki@gmail.com", "password": "Tomomki0901"}'
 ```
 
 ## Get User
-
 ```
-curl http://localhost:9000/user
+curl http://localhost:9000/users
 ```
 
 ## Todo Create
-
 ```
 curl -X POST http://localhost:9000/api/todos \
 -H 'Content-Type: application/json' \

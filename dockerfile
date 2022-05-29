@@ -1,9 +1,9 @@
 FROM --platform=linux/x86_64 golang:1.18
 
-RUN mkdir /go/src/work
+WORKDIR /work
 
-WORKDIR /go/src/work
-
-COPY ./ /go/src/work
+RUN go install github.com/cosmtrek/air@v1.29.0
 
 EXPOSE 9000
+
+CMD ["air", "-c", ".air.toml"]
