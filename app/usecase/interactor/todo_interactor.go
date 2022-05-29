@@ -17,6 +17,12 @@ type TodoInteractor struct {
 	TodoRepository TodoRepository
 }
 
+func NewTodoInteractor(todoRepo TodoRepository) *TodoInteractor {
+	return &TodoInteractor{
+		TodoRepository: todoRepo,
+	}
+}
+
 func (interactor *TodoInteractor) Create(inputData input.CreateTodo) (outputData output.Todo, err error) {
 	todo := &domain.Todo{
 		ID:     inputData.ID,

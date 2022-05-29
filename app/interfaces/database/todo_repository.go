@@ -6,6 +6,12 @@ type TodoRepository struct {
 	SqlHandler
 }
 
+func NewTodoRepository(sqlHandler SqlHandler) *TodoRepository {
+	return &TodoRepository{
+		SqlHandler: sqlHandler,
+	}
+}
+
 func (repo *TodoRepository) Store(t *domain.Todo) (todo *domain.Todo, err error) {
 	if err = repo.Create(t).Error; err != nil {
 		return

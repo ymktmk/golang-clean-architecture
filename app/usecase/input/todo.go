@@ -8,7 +8,7 @@ type TodoUsecase interface {
 	Create(CreateTodo) (output.Todo, error)
 	Update(UpdateTodo) (output.Todo, error)
 	GetTodo(GetTodo) (output.Todo, error)
-	GetAllTodos(GetAllTodos) (output.Todo, error)
+	GetAllTodos(GetAllTodos) (output.Todos, error)
 }
 
 type CreateTodo struct {
