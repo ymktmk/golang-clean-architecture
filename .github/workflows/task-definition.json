@@ -1,0 +1,70 @@
+{
+      "containerDefinitions": [
+            {
+                  "name": "go",
+                  "image": "",
+                  "cpu":  0,
+                  "essential": true,
+                  "command": ["/main"],
+                  "portMappings" : [
+                        {
+                              "containerPort": 443,
+                              "hostPort": 443,
+                              "protocol": "tcp"
+                        },
+                        {
+                              "containerPort": 80,
+                              "hostPort": 80,
+                              "protocol": "tcp"
+                        }
+                  ],
+                  "mountPoints" : [
+                        {
+                              "containerPath" : "/go/src/work",
+                              "readOnly"      : false,
+                              "sourceVolume"  : "mount"
+                        },
+                        {
+                              "containerPath" : "/var/run/docker.sock",
+                              "sourceVolume"  : "socket"
+                        },
+                        {
+                              "containerPath" : "/var/www/.cache",
+                              "sourceVolume"  : "cache"
+                        }
+                  ],
+                  "logConfiguration" : {
+                        "logDriver" : "awslogs",
+                        "options"   : {
+                              "awslogs-region"        : "ap-northeast-1",
+                              "awslogs-stream-prefix" : "online-code",
+                              "awslogs-group"         : "/ecs/log/go"
+                        }
+                  }
+            }
+      ],
+      "family": "go",
+      "cpu": "256",
+      "memory": "512",
+      "requiresCompatibilities": ["EC2"],
+      "volumes": [
+            {
+                  "name": "mount",
+                  "host": {
+                        "sourcePath": "/"
+                  }
+            },
+            {
+                  "name": "socket",
+                  "host": {
+                        "sourcePath": "/var/run/docker.sock"
+                  }
+            },
+            {
+                  "name": "cache",
+                  "host": {
+                        "sourcePath": "/var/www/.cache"
+                  }
+            }
+      ]
+}
