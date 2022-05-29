@@ -10,17 +10,17 @@ import (
 
 	"github.com/ymktmk/golang-clean-architecture/app/domain"
 	"github.com/ymktmk/golang-clean-architecture/app/interfaces/database"
-	"github.com/ymktmk/golang-clean-architecture/app/usecase"
+	"github.com/ymktmk/golang-clean-architecture/app/usecase/interactor"
 	"github.com/ymktmk/golang-clean-architecture/app/utils"
 )
 
 type UserController struct {
-	Interactor usecase.UserInteractor
+	Interactor interactor.UserInteractor
 }
 
 func NewUserController(sqlHandler database.SqlHandler) *UserController {
 	return &UserController{
-		Interactor: usecase.UserInteractor{
+		Interactor: interactor.UserInteractor{
 			UserRepository: &database.UserRepository{
 				SqlHandler: sqlHandler,
 			},
@@ -136,7 +136,7 @@ func (controller *UserController) Update(c echo.Context) (err error) {
 	}
 
 	id, _ := strconv.Atoi(c.Get("id").(string))
-	
+
 	u := &domain.User{Name: uur.UserName}
 	user, err := controller.Interactor.Update(id, u)
 	if err != nil {
