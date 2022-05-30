@@ -19,12 +19,14 @@ services:
 
     app:
         container_name: todo
-        build: .
+        build:
+            context: .
+            dockerfile: docker/dockerfile.dev
         tty: true
         ports:
             - "9000:9000"
         volumes:
-            - .:/work
+            - .:/go/src/work
         depends_on:
             - db
 volumes:

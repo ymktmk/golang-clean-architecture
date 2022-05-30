@@ -20,7 +20,7 @@ docker exec -it todo go run migrate/migrate.go
 
 ## Docker Build & Up (ホットリロード付き)
 ```
-docker-compose up
+docker compose -f docker/docker-compose-dev.yaml up
 ```
 
 # エンドポイント

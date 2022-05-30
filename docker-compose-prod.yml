@@ -1,0 +1,10 @@
+version: '3.8'
+services:
+    app:
+        container_name: todo
+        build:
+            context: .
+            dockerfile: docker/dockerfile.prod
+        tty: true
+        ports:
+            - "80:80"
