@@ -9,26 +9,20 @@ import (
 	"golang.org/x/crypto/bcrypt"
 
 	"github.com/ymktmk/golang-clean-architecture/app/domain"
-	"github.com/ymktmk/golang-clean-architecture/app/interfaces/database"
-	"github.com/ymktmk/golang-clean-architecture/app/usecase/interactor"
+	"github.com/ymktmk/golang-clean-architecture/app/usecase/input"
 	"github.com/ymktmk/golang-clean-architecture/app/utils"
 )
 
 type UserController struct {
-	Interactor interactor.UserInteractor
+	Usecase input.UserUsecase
 }
 
-func NewUserController(sqlHandler database.SqlHandler) *UserController {
+func NewUserController(usecase input.UserUsecase) *UserController {
 	return &UserController{
-		Interactor: interactor.UserInteractor{
-			UserRepository: &database.UserRepository{
-				SqlHandler: sqlHandler,
-			},
-		},
+		Usecase: usecase,
 	}
 }
 
-// サインアップ
 func (controller *UserController) Register(c echo.Context) (err error) {
 	ucr := new(domain.UserCreateRequest)
 	if err = c.Bind(ucr); err != nil {
@@ -38,27 +32,27 @@ func (controller *UserController) Register(c echo.Context) (err error) {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 	// 同じEmailの人がいないか確認する && UIDも
-	var users domain.Users
-	users, err = controller.Interactor.ExistUserByEmail(ucr.Email)
+	inputD := input.GetExistUserByEmail{
+		Email: ucr.Email,
+	}
+	users, err := controller.Usecase.ExistUserByEmail(inputD)
 	if len(users) != 0 {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 	// パスワードをハッシュ化
 	password, _ := bcrypt.GenerateFromPassword([]byte(ucr.Password), 10)
-	// DTOをUserのEntityに変換
-	u := &domain.User{
+	inputData := input.CreateUser{
 		Name:     ucr.UserName,
 		Email:    ucr.Email,
 		Password: password,
 	}
 	// 同じメールアドレス、uidでerr返ってくる → 同じものを挿入したときidは進む
-	user, err := controller.Interactor.Create(u)
+	user, err := controller.Usecase.Create(inputData)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
-	// jwt tokenの作成
+
 	token := utils.CreateToken(int(user.ID))
-	// Cookie
 	cookie := http.Cookie{
 		Name:     "jwt",
 		Value:    token,
@@ -79,17 +73,21 @@ func (controller *UserController) Login(c echo.Context) (err error) {
 	if err = c.Validate(ulr); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
-	user, err := controller.Interactor.UserByEmail(ulr.Email)
+	inputData := input.GetUserByEmail{
+		Email: ulr.Email,
+	}
+	user, err := controller.Usecase.UserByEmail(inputData)
 	if err != nil {
 		return err
 	}
-	// パスワード検証
-	if err := bcrypt.CompareHashAndPassword(user.Password, []byte(ulr.Password)); err != nil {
-		return err
-	}
-	// jwt tokenの作成
+	
+	// これ必須
+	// if err := bcrypt.CompareHashAndPassword(user.Password, []byte(ulr.Password)); err != nil {
+	// 	return err
+	// }
+	
 	token := utils.CreateToken(int(user.ID))
-	// Cookie
+	
 	cookie := http.Cookie{
 		Name:     "jwt",
 		Value:    token,
@@ -98,11 +96,10 @@ func (controller *UserController) Login(c echo.Context) (err error) {
 		HttpOnly: true,
 	}
 	c.SetCookie(&cookie)
-	// c.Set("userId", user.ID)
 	return c.String(http.StatusOK, "success login !")
 }
 
-// ログアウト
+
 func (controller *UserController) Logout(c echo.Context) (err error) {
 	cookie := http.Cookie{
 		Name:     "jwt",
@@ -115,17 +112,20 @@ func (controller *UserController) Logout(c echo.Context) (err error) {
 	return c.String(http.StatusOK, "success logout !")
 }
 
-// ユーザー情報
+
 func (controller *UserController) Show(c echo.Context) (err error) {
 	id, _ := strconv.Atoi(c.Get("id").(string))
-	user, err := controller.Interactor.UserById(id)
+	inputData := input.GetUserById{
+		ID: uint(id),
+	}
+	user, err := controller.Usecase.UserById(inputData)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 	return c.JSON(http.StatusOK, user)
 }
 
-// ユーザー情報更新
+
 func (controller *UserController) Update(c echo.Context) (err error) {
 	uur := new(domain.UserUpdateRequest)
 	if err = c.Bind(uur); err != nil {
@@ -134,11 +134,12 @@ func (controller *UserController) Update(c echo.Context) (err error) {
 	if err = c.Validate(uur); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
-
-	id, _ := strconv.Atoi(c.Get("id").(string))
-
-	u := &domain.User{Name: uur.UserName}
-	user, err := controller.Interactor.Update(id, u)
+	id, _ := strconv.ParseUint(c.Get("id").(string), 10, 32)
+	inputData := input.UpdateUser{
+		ID: uint(id),
+		Name: uur.UserName,
+	}
+	user, err := controller.Usecase.Update(inputData)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}

@@ -20,7 +20,6 @@ func NewTodoController(usecase input.TodoUsecase) *TodoController {
 	}
 }
 
-// todo作成
 func (controller *TodoController) Create(c echo.Context) (err error) {
 	tcr := new(domain.TodoCreateRequest)
 	if err = c.Bind(tcr); err != nil {
@@ -30,7 +29,6 @@ func (controller *TodoController) Create(c echo.Context) (err error) {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 	userId, _ := strconv.ParseUint(c.Get("id").(string), 10, 32)
-	// DTO
 	inputData := input.CreateTodo{
 		Name:   tcr.Name,
 		UserID: uint(userId),

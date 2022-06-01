@@ -26,7 +26,7 @@ import (
 
 var (
 	mockDB, mock, _ = infrastructure.NewDbMock()
-	userController = controllers.NewUserController(infrastructure.SqlMockHandler(mockDB))
+	userController = controllers.NewUserController(interactor.NewUserInteractor(database.NewUserRepository(infrastructure.SqlMockHandler(mockDB))))
 	todoController = controllers.NewTodoController(interactor.NewTodoInteractor(database.NewTodoRepository(infrastructure.SqlMockHandler(mockDB))))
 	e = echo.New()
 )

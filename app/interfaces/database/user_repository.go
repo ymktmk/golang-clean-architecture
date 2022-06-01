@@ -8,6 +8,12 @@ type UserRepository struct {
 	SqlHandler
 }
 
+func NewUserRepository(sqlHandler SqlHandler) *UserRepository {
+	return &UserRepository{
+		SqlHandler: sqlHandler,
+	}
+}
+
 func (repo *UserRepository) Store(u *domain.User) (user *domain.User, err error) {
 	if err = repo.Create(u).Error; err != nil {
 		return
@@ -38,7 +44,7 @@ func (repo *UserRepository) FindByEmail(email string) (user *domain.User, err er
 	return
 }
 
-func (repo *UserRepository) FindUsersByEmail(email string) (users domain.Users, err error) {
+func (repo *UserRepository) FindUsersByEmail(email string) (users *domain.Users, err error) {
 	if err = repo.Where("email = ?", email).Find(&users).Error; err != nil {
 		return
 	}

@@ -12,7 +12,7 @@ import (
 )
 
 func NewRouter() *echo.Echo {
-	userController := controllers.NewUserController(NewSqlHandler())
+	userController := controllers.NewUserController(interactor.NewUserInteractor(database.NewUserRepository(NewSqlHandler())))
 	todoController := controllers.NewTodoController(interactor.NewTodoInteractor(database.NewTodoRepository(NewSqlHandler())))
 	e := echo.New()
 	e.Use(middleware.Logger())
